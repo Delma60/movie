@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Manrope:wght@400;500;600;700;800&display=swap');
 
 /* ==========================================================
    DESIGN TOKENS
@@ -18,8 +17,8 @@
 
   --line: rgba(245, 244, 242, 0.09);
 
-  --font-display: 'Fraunces', serif;
-  --font-body: 'Manrope', sans-serif;
+  --font-display: var(--font-fraunces), serif;
+  --font-body: var(--font-manrope), sans-serif;
 
   /* safe-area insets — real values injected by the WebView/browser,
      fall back to 0 on plain web */
