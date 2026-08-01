@@ -150,17 +150,21 @@ export const watchProgress = pgTable("watch_progress", {
   STORAGE
 */
 
+
 export const storageBuckets = pgTable(
   "vert_storage_buckets",
   {
     id: uuid("id").primaryKey().defaultRandom(),
+    projectId: uuid("project_id").notNull(),
     name: text("name").notNull(),
     public: boolean("public").notNull().default(false),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   },
-  (t) => [uniqueIndex("storage_buckets_project_name_idx").on(t.projectId, t.name)],
+  (t) => [
+    uniqueIndex("storage_buckets_project_name_idx").on(t.projectId, t.name),
+    index("storage_buckets_project_idx").on(t.projectId),
+  ],
 );
-
 
 /* ==========================================================
    MY LIST
