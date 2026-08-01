@@ -8,9 +8,9 @@ Admin (5) since admin depends on roles.
 
 ## 1. Foundation
 
-- [ ] Extract inline styles from `page.tsx` into `globals.css` (done — see previous message)
-- [ ] Move Fraunces/Manrope to `next/font/google`
-- [ ] Add `viewport-fit=cover` to viewport meta (needed for safe-area insets later)
+- [x] Extract inline styles from `page.tsx` into `globals.css`
+- [x] Move Fraunces/Manrope to `next/font/google`
+- [x] Add `viewport-fit=cover` to viewport meta (needed for safe-area insets later)
 - [ ] Decide project structure: `app/(public)/...` for the site, `app/(admin)/admin/...` for the admin panel, sharing one Next.js app vs. splitting into two apps/repos
 - [ ] Set up environment config (`.env.local`, `.env.example`) for API keys, DB URL, storage bucket, etc.
 - [ ] Pick DB/backend: Postgres via Supabase/Neon/PlanetScale, or a headless CMS (Sanity/Strapi) if non-devs will manage content
@@ -18,14 +18,14 @@ Admin (5) since admin depends on roles.
 
 ## 2. Data model
 
-- [ ] `Title` (movie or series): id, slug, title, synopsis, genre[], year, duration, rating, poster_url, backdrop_url, trailer_url, status (draft/published), created_at
-- [ ] `Episode` (for series): id, title_id, season, episode_number, video_url, duration
-- [ ] `VideoAsset`: id, title_id/episode_id, source_url, resolution variants, encoding status
-- [ ] `User`: id, email, password_hash/oauth, display_name, role (`user` / `admin` / `editor`), created_at
-- [ ] `WatchProgress`: user_id, title_id/episode_id, seconds_watched, updated_at
-- [ ] `MyList`: user_id, title_id
-- [ ] `Subscription` (if paid): user_id, plan, status, renews_at
-- [ ] Seed script with sample titles so both public site and admin have data to work against
+- [x] `Title` (movie or series): id, slug, title, synopsis, genre[], year, duration, rating, poster_url, backdrop_url, trailer_url, status (draft/published), created_at
+- [x] `Episode` (for series): id, title_id, season, episode_number, video_url, duration
+- [x] `VideoAsset`: id, title_id/episode_id, source_url, resolution variants, encoding status
+- [x] `User`: id, email, password_hash/oauth, display_name, role (`user` / `admin` / `editor`), created_at
+- [x] `WatchProgress`: user_id, title_id/episode_id, seconds_watched, updated_at
+- [x] `MyList`: user_id, title_id
+- [x] `Subscription` (if paid): user_id, plan, status, renews_at
+- [x] Seed script with sample titles so both public site and admin have data to work against
 
 ## 3. Auth & roles
 
