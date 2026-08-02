@@ -372,11 +372,6 @@ a {
   overflow-x: auto;
   padding: 4px 48px 12px;
   scroll-snap-type: x proximity;
-  scrollbar-width: none;
-}
-
-.vp-row-scroll::-webkit-scrollbar {
-  display: none;
 }
 
 .vp-card {
@@ -530,6 +525,543 @@ a {
 .vp-progress-fill {
   height: 100%;
   background: var(--gold);
+}
+
+/* ==========================================================
+   TITLE DETAIL PAGE
+   ========================================================== */
+.vp-title-page {
+  padding-top: 0;
+}
+
+.vp-title-hero {
+  position: relative;
+  min-height: 72vh;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.vp-title-hero-bg {
+  position: absolute;
+  inset: -5%;
+}
+
+.vp-title-hero-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(11, 11, 13, 0.15) 0%, rgba(11, 11, 13, 0.6) 65%, var(--background) 100%),
+    linear-gradient(90deg, rgba(11, 11, 13, 0.75) 0%, rgba(11, 11, 13, 0.1) 55%);
+}
+
+.vp-title-hero-content {
+  position: relative;
+  z-index: 2;
+  padding: calc(96px + var(--safe-top)) calc(48px + var(--safe-right)) 64px calc(48px + var(--safe-left));
+  max-width: 680px;
+}
+
+.vp-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--text-dim);
+  margin-bottom: 22px;
+}
+
+.vp-breadcrumb a {
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.vp-breadcrumb a:hover,
+.vp-breadcrumb a:focus-visible {
+  color: var(--gold);
+}
+
+.vp-breadcrumb [aria-current="page"] {
+  color: var(--text);
+}
+
+.vp-title-hero-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(38px, 5.5vw, 64px);
+  line-height: 1.04;
+  letter-spacing: -0.01em;
+  margin: 0 0 16px;
+}
+
+.vp-episodes {
+  position: relative;
+  z-index: 2;
+  padding: 8px 0 48px;
+}
+
+.vp-episode-list {
+  list-style: none;
+  margin: 0;
+  padding: 0 calc(48px + var(--safe-right)) 0 calc(48px + var(--safe-left));
+  display: flex;
+  flex-direction: column;
+}
+
+.vp-episode-row {
+  display: grid;
+  grid-template-columns: 32px 1fr auto 44px;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 12px;
+  border-bottom: 1px solid var(--line);
+  transition: background 0.2s ease;
+}
+
+.vp-episode-row:hover {
+  background: rgba(245, 244, 242, 0.03);
+}
+
+.vp-episode-number {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--gold-dim);
+  text-align: center;
+}
+
+.vp-episode-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.vp-episode-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.vp-episode-synopsis {
+  font-size: 13px;
+  color: var(--text-dim);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vp-episode-duration {
+  font-size: 13px;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.vp-episode-play {
+  justify-self: end;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.vp-episode-play:hover,
+.vp-episode-play:focus-visible {
+  border-color: var(--gold-dim);
+}
+
+.vp-related-row {
+  padding-top: 8px;
+  padding-bottom: 64px;
+}
+
+@media (max-width: 720px) {
+  .vp-title-hero-content {
+    padding: calc(64px + var(--safe-top)) calc(20px + var(--safe-right)) 40px calc(20px + var(--safe-left));
+  }
+
+  .vp-episode-list {
+    padding-left: calc(20px + var(--safe-left));
+    padding-right: calc(20px + var(--safe-right));
+  }
+
+  .vp-episode-row {
+    grid-template-columns: 24px 1fr 36px;
+    row-gap: 4px;
+  }
+
+  .vp-episode-duration {
+    display: none;
+  }
+
+  .vp-episode-synopsis {
+    white-space: normal;
+  }
+}
+
+/* ==========================================================
+   BROWSE PAGE
+   ========================================================== */
+.vp-browse {
+  padding: calc(48px + var(--safe-top)) calc(48px + var(--safe-right)) calc(80px + var(--safe-bottom)) calc(48px + var(--safe-left));
+}
+
+.vp-browse-header {
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.vp-browse-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(32px, 4vw, 44px);
+  letter-spacing: -0.01em;
+  margin: 0 0 8px;
+}
+
+.vp-browse-subtitle {
+  font-size: 15px;
+  color: var(--text-dim);
+  margin: 0;
+}
+
+/* ----------------------------------------------------------
+   FILTER BAR
+   ---------------------------------------------------------- */
+.vp-browse-filters {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 36px;
+  padding: 18px 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.vp-browse-filters-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.vp-browse-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vp-browse-filter span {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.vp-browse-filter select {
+  appearance: none;
+  -webkit-appearance: none;
+  min-width: 140px;
+  min-height: 40px;
+  padding: 8px 34px 8px 12px;
+  background-color: rgba(245, 244, 242, 0.04);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23c9a876' stroke-width='1.4' fill='none' fill-rule='evenodd'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.vp-browse-filter select:hover {
+  border-color: var(--gold-dim);
+}
+
+.vp-browse-filter select:focus-visible {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 1px var(--gold);
+}
+
+.vp-browse-filter select option {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.vp-browse-clear {
+  align-self: flex-end;
+  min-height: 40px;
+  padding: 0 4px;
+  background: none;
+  border: none;
+  color: var(--gold);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--gold-dim);
+}
+
+.vp-browse-clear:hover,
+.vp-browse-clear:focus-visible {
+  text-decoration-color: var(--gold);
+}
+
+.vp-browse-count {
+  font-size: 13px;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+/* ----------------------------------------------------------
+   GRID
+   ---------------------------------------------------------- */
+.vp-browse-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 24px 20px;
+}
+
+.vp-browse-grid .vp-card {
+  width: 100%;
+}
+
+.vp-browse-grid .vp-poster-initial {
+  font-size: 72px;
+}
+
+/* ----------------------------------------------------------
+   EMPTY STATE
+   ---------------------------------------------------------- */
+.vp-browse-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 96px 20px;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 15px;
+}
+
+/* ----------------------------------------------------------
+   RESPONSIVE
+   ---------------------------------------------------------- */
+@media (max-width: 720px) {
+  .vp-browse {
+    padding-left: calc(20px + var(--safe-left));
+    padding-right: calc(20px + var(--safe-right));
+    padding-top: calc(28px + var(--safe-top));
+  }
+
+  .vp-browse-filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .vp-browse-filters-controls {
+    gap: 14px;
+  }
+
+  .vp-browse-filter select {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .vp-browse-count {
+    align-self: flex-end;
+  }
+
+  .vp-browse-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 20px 14px;
+  }
+}
+
+/* ==========================================================
+   WATCH PAGE
+   ========================================================== */
+.vp-watch-page {
+  padding-bottom: calc(64px + var(--safe-bottom));
+}
+
+.vp-watch-topbar {
+  position: relative;
+  z-index: 3;
+  padding: calc(20px + var(--safe-top)) calc(24px + var(--safe-right)) 0 calc(24px + var(--safe-left));
+}
+
+.vp-watch-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: color 0.2s ease;
+}
+
+.vp-watch-back:hover,
+.vp-watch-back:focus-visible {
+  color: var(--gold);
+}
+
+/* ----------------------------------------------------------
+   PLAYER
+   ---------------------------------------------------------- */
+.vp-player {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: 82vh;
+  overflow: hidden;
+  margin-top: 16px;
+}
+
+.vp-player-video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: #000;
+}
+
+.vp-player-fallback {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  padding: 24px;
+  background: radial-gradient(ellipse at center, rgba(11, 11, 13, 0.15) 0%, rgba(11, 11, 13, 0.65) 100%);
+}
+
+.vp-player-fallback-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 1px solid rgba(245, 244, 242, 0.35);
+  background: rgba(11, 11, 13, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.vp-player-fallback-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--text);
+  margin: 0;
+}
+
+.vp-player-fallback-text {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin: 0;
+}
+
+/* ----------------------------------------------------------
+   INFO
+   ---------------------------------------------------------- */
+.vp-watch-info {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 32px;
+  flex-wrap: wrap;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 32px calc(24px + var(--safe-right)) 0 calc(24px + var(--safe-left));
+}
+
+.vp-watch-info-main {
+  max-width: 640px;
+}
+
+.vp-watch-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(24px, 3vw, 32px);
+  margin: 0 0 10px;
+}
+
+.vp-watch-synopsis {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-dim);
+  margin: 0;
+}
+
+.vp-watch-next {
+  flex-shrink: 0;
+}
+
+/* ----------------------------------------------------------
+   EPISODES (watch-page overrides)
+   ---------------------------------------------------------- */
+.vp-watch-episodes {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding-top: 32px;
+}
+
+.vp-watch-episodes .vp-row-head,
+.vp-watch-episodes .vp-episode-list {
+  padding-left: calc(24px + var(--safe-left));
+  padding-right: calc(24px + var(--safe-right));
+}
+
+.vp-episode-row.active {
+  background: rgba(201, 168, 118, 0.06);
+}
+
+.vp-episode-row.active .vp-episode-title {
+  color: var(--gold);
+}
+
+.vp-episode-playing {
+  justify-self: end;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold);
+  font-size: 10px;
+}
+
+@media (max-width: 720px) {
+  .vp-watch-info {
+    padding-left: calc(20px + var(--safe-left));
+    padding-right: calc(20px + var(--safe-right));
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .vp-watch-topbar {
+    padding-left: calc(20px + var(--safe-left));
+    padding-right: calc(20px + var(--safe-right));
+  }
 }
 
 .vp-footer {
@@ -891,12 +1423,7 @@ a {
   overflow-x: auto;
   padding: 4px calc(48px + var(--safe-right)) 12px calc(48px + var(--safe-left));
   scroll-snap-type: x proximity;
-  scrollbar-width: none;
   -webkit-overflow-scrolling: touch; /* momentum scroll in WebView */
-}
-
-.vp-row-scroll::-webkit-scrollbar {
-  display: none;
 }
 
 .vp-card {
@@ -1113,6 +1640,7 @@ a {
     transition: none;
   }
 }
+
 
 /* ==========================================================
    RESPONSIVE

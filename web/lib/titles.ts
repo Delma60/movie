@@ -1,6 +1,6 @@
-import { db, titles } from "@/lib/db";
+import { db, titles, episodes as episodesTable, videoAssets } from "@/lib/db";
 import type { Title } from "@/lib/db/schema";
-import { and, asc, desc, eq } from "drizzle-orm";
+import { and, asc, desc, eq, ne } from "drizzle-orm";
 import { BROWSE_SORTS, type BrowseSort } from "@/lib/browse-options";
 
 export type TitleType = "movie" | "series";
@@ -66,6 +66,78 @@ export async function getBrowseTitles(filters: BrowseFilters): Promise<Title[]> 
     .from(titles)
     .where(and(...conditions))
     .orderBy(...sortColumns(filters.sort ?? "newest"));
+}
+
+/** A single published title by slug, for the title detail page. */
+export async function getTitleBySlug(slug: string): Promise<Title | null> {
+  const [title] = await db
+    .select()
+    .from(titles)
+    .where(and(eq(titles.slug, slug), eq(titles.status, "published")))
+    .limit(1);
+
+  return title ?? null;
+}
+
+/** Ordered episode list for a series title. */
+export async function getEpisodesForTitle(titleId: string) {
+  return db
+    .select()
+    .from(episodesTable)
+    .where(eq(episodesTable.titleId, titleId))
+    .orderBy(asc(episodesTable.season), asc(episodesTable.episodeNumber));
+}
+
+export interface WatchData {
+  title: Title;
+  episodes: Awaited<ReturnType<typeof getEpisodesForTitle>>;
+  currentEpisode: Awaited<ReturnType<typeof getEpisodesForTitle>>[number] | null;
+  videoAsset: typeof videoAssets.$inferSelect | null;
+}
+
+/** Everything the /watch page needs: the title, its episode list (if a
+ * series), which episode is currently selected, and the video source
+ * to attempt to play. */
+export async function getWatchData(
+  slug: string,
+  episodeId?: string
+): Promise<WatchData | null> {
+  const title = await getTitleBySlug(slug);
+  if (!title) return null;
+
+  const episodes = title.type === "series" ? await getEpisodesForTitle(title.id) : [];
+
+  const currentEpisode =
+    title.type === "series"
+      ? (episodeId ? episodes.find((e) => e.id === episodeId) : episodes[0]) ?? null
+      : null;
+
+  const [videoAsset] = await db
+    .select()
+    .from(videoAssets)
+    .where(
+      currentEpisode
+        ? eq(videoAssets.episodeId, currentEpisode.id)
+        : eq(videoAssets.titleId, title.id)
+    )
+    .limit(1);
+
+  return { title, episodes, currentEpisode, videoAsset: videoAsset ?? null };
+}
+
+/** Other published titles sharing a genre, for "More Like This". */
+export async function getRelatedTitles(title: Title, limit = 6): Promise<Title[]> {
+  return db
+    .select()
+    .from(titles)
+    .where(
+      and(
+        eq(titles.status, "published"),
+        eq(titles.genre, title.genre),
+        ne(titles.id, title.id)
+      )
+    )
+    .limit(limit);
 }
 
 /** e.g. 128 -> "2h 8m" */

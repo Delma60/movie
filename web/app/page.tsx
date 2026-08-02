@@ -1,6 +1,6 @@
 "use client";
 import { PosterCard, PosterItem } from "@/components/PosterCard";
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 /* ---------------------------------------------------------
    VELVET — premium streaming homepage
@@ -126,39 +126,9 @@ function Row({ eyebrow, items }: { eyebrow: string; items: PosterItem[] }) {
 }
 
 export default function VelvetHomepage() {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   return (
     <div className="vp-root">
       <div className="vp-grain" />
-
-      <nav className={`vp-nav ${scrolled ? "scrolled" : ""}`}>
-        <div className="vp-logo">
-          VEL<span>VET</span>
-        </div>
-        <ul className="vp-nav-links">
-          {NAV_LINKS.map((l) => (
-            <li key={l.label}>
-              <a href={l.href}>{l.label}</a>
-            </li>
-          ))}
-        </ul>
-        <div className="vp-nav-right">
-          <button className="vp-icon-btn" aria-label="Search">
-            ⌕
-          </button>
-          <button className="vp-icon-btn" aria-label="Notifications">
-            ◔
-          </button>
-          <div className="vp-avatar" />
-        </div>
-      </nav>
 
       <header className="vp-hero">
         <div className="vp-hero-bg" />
