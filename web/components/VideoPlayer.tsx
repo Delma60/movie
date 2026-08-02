@@ -18,14 +18,15 @@ export function VideoPlayer({ src, status, variant, label }: VideoPlayerProps) {
     !src || !status
       ? "missing"
       : status === "processing"
-      ? "processing"
-      : status === "failed"
-      ? "failed"
-      : playbackErrored
-      ? "error"
-      : "playable";
+        ? "processing"
+        : status === "failed"
+          ? "failed"
+          : playbackErrored
+            ? "error"
+            : "playable";
 
-  const playableSrc = typeof src === "string" && src.length > 0 ? src : undefined;
+  const playableSrc =
+    typeof src === "string" && src.length > 0 ? src : undefined;
 
   return (
     <div className={`vp-player vp-variant-${variant % 6}`}>

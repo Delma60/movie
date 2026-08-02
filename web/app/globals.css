@@ -370,8 +370,16 @@ a {
   display: flex;
   gap: 16px;
   overflow-x: auto;
-  padding: 4px 48px 12px;
+  padding: 4px 24px 12px;
+  margin: 0 12px;
   scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-padding-inline: 12px;
+}
+
+.vp-row-scroll::-webkit-scrollbar {
+  display: none;
 }
 
 .vp-card {
