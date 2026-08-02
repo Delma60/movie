@@ -56,9 +56,9 @@ export function Navbar({ user }: NavbarProps) {
         })}
       </ul>
       <div className="vp-nav-right">
-        <button className="vp-icon-btn" aria-label="Search">
+        <Link href="/search" className="vp-icon-btn" aria-label="Search">
           ⌕
-        </button>
+        </Link>
 
         {user ? (
           <>

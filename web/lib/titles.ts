@@ -1,6 +1,6 @@
 import { db, titles, episodes as episodesTable, videoAssets } from "@/lib/db";
 import type { Title } from "@/lib/db/schema";
-import { and, asc, desc, eq, ne } from "drizzle-orm";
+import { and, asc, desc, eq, ilike, ne, or } from "drizzle-orm";
 import { BROWSE_SORTS, type BrowseSort } from "@/lib/browse-options";
 
 export type TitleType = "movie" | "series";
@@ -66,6 +66,26 @@ export async function getBrowseTitles(filters: BrowseFilters): Promise<Title[]> 
     .from(titles)
     .where(and(...conditions))
     .orderBy(...sortColumns(filters.sort ?? "newest"));
+}
+
+/** Published titles matching a free-text query (title or genre), for /search. */
+export async function searchTitles(query: string, limit = 24): Promise<Title[]> {
+  const q = query.trim();
+  if (!q) return [];
+
+  const pattern = `%${q}%`;
+
+  return db
+    .select()
+    .from(titles)
+    .where(
+      and(
+        eq(titles.status, "published"),
+        or(ilike(titles.title, pattern), ilike(titles.genre, pattern))
+      )
+    )
+    .orderBy(desc(titles.year), desc(titles.createdAt))
+    .limit(limit);
 }
 
 /** A single published title by slug, for the title detail page. */

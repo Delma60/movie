@@ -6,6 +6,35 @@ Admin (5) since admin depends on roles.
 
 ---
 
+## Admin readiness assessment (current state)
+
+### Blocking — these should land first because Admin depends on them
+
+- [ ] Protect `/admin` end to end. The current proxy only guards `/my-list` and `/account`, so `/admin` pages and layouts are still reachable by anyone who hits the URL.
+- [ ] Implement real role enforcement. `users.role` exists, but current auth paths still create users as `user` and there is no bootstrap admin account or promotion flow for `editor`/`admin`.
+
+### Not blocking, but incomplete from earlier sections — worth closing out first since they are small and will otherwise force context switching
+
+- [ ] Replace the homepage mock data with real data from `titles`, `watchProgress`, and `myList` instead of hardcoded arrays.
+- [ ] Add watch progress persistence: write progress from the player and read it back for Continue Watching.
+- [ ] Add "My List" add support; the current UI only supports remove.
+- [ ] Build `/account` into a real account page with profile fields and subscription info.
+
+### Smaller / lower priority, can defer into or alongside Admin work
+
+- [ ] Add poster/backdrop upload/storage wiring and a corresponding admin upload flow.
+- [ ] Add a `.env.example` for the web app with the expected DB, storage, auth, and provider environment variables.
+- [ ] Decide the route-group structure for public vs. admin routes.
+
+### Suggested order
+
+1. Decide the route-group structure.
+2. Add role enforcement to the proxy and a way to grant `admin`/`editor` roles.
+3. Start building the Admin shell and access control.
+4. Then close out the public app gaps (homepage wiring, watch progress, My List add, account page).
+
+---
+
 ## 1. Foundation
 
 - [x] Extract inline styles from `page.tsx` into `globals.css`
