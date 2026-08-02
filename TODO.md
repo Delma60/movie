@@ -58,8 +58,9 @@ Admin (5) since admin depends on roles.
 
 ## 3. Auth & roles
 
-- [ ] User-facing auth: sign up / log in (Auth.js/NextAuth, Clerk, or Supabase Auth)
-- [ ] Session handling (JWT or DB session), password reset, email verification
+- [x] User-facing auth: sign up / log in (Auth.js/NextAuth, Clerk, or Supabase Auth)
+- [x] Session handling (JWT or DB session)
+- [ ] password reset, email verification
 - [ ] Role field (`user`, `editor`, `admin`) on the user record
 - [ ] Route protection: middleware that blocks `/admin/*` for anyone without `editor`/`admin` role
 - [ ] Separate admin login screen (or same login, redirect by role) — decide now, it affects routing structure
@@ -67,12 +68,12 @@ Admin (5) since admin depends on roles.
 
 ## 4. Public web app — pages
 
-- [ ] `/` Home (exists — hero + rows)
-- [ ] `/browse` or `/movies`, `/series` — catalog with genre/year filters, sort
-- [ ] `/title/[slug]` — detail page: synopsis, cast, related titles, play button
-- [ ] `/watch/[slug]` — player page
-- [ ] `/search` — search-as-you-type or submit
-- [ ] `/my-list`
+- [x] `/` Home (exists — hero + rows)
+- [x] `/browse` or `/movies`, `/series` — catalog with genre/year filters, sort
+- [x] `/title/[slug]` — detail page: synopsis, cast, related titles, play button
+- [x] `/watch/[slug]` — player page
+- [x] `/search` — search-as-you-type or submit
+- [x] `/my-list`
 - [ ] `/login`, `/signup`, `/account` (profile, password, subscription status)
 - [ ] Empty/error states: no search results, failed video load, offline (relevant once wrapped in WebView)
 
@@ -81,7 +82,7 @@ Admin (5) since admin depends on roles.
 - [ ] Video player: HTML5 `<video>`, HLS.js for adaptive streaming if using segmented video
 - [ ] Continue-watching: read/write `WatchProgress`, drive the progress bar already in the UI
 - [ ] "My List" add/remove, reflected instantly in UI
-- [ ] Search: query titles by name/genre
+- [x] Search: query titles by name/genre
 - [ ] Responsive pass on every page at mobile widths (this becomes the APK's UI, so this is not optional)
 
 ## 6. Admin panel — access & shell
@@ -121,7 +122,7 @@ Admin (5) since admin depends on roles.
 
 ## 11. WebView / APK readiness
 
-- [ ] `overscroll-behavior: none`, safe-area padding (already in `globals.css`)
+- [x] `overscroll-behavior: none`, safe-area padding (already in `globals.css`)
 - [ ] All interactive elements work on tap, no hover-only affordances
 - [ ] Tap targets ≥44px, `-webkit-tap-highlight-color: transparent`
 - [ ] Handle Android hardware back button → router.back(), not app exit

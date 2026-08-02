@@ -1,7 +1,10 @@
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import { eq } from "drizzle-orm";
 import { getOidcClient } from "@/lib/spurs";
 import { issueSessionToken, SESSION_COOKIE } from "@/lib/session";
+import { db, users } from "@/lib/db";
+import { resolveInitialRole } from "@/lib/roles";
 
 export async function GET(req: NextRequest) {
   const appUrl = process.env.APP_URL ?? req.nextUrl.origin;
@@ -30,10 +33,34 @@ export async function GET(req: NextRequest) {
     const { user } = await oidc.handleCallback(code, codeVerifier);
     if (!user.email) throw new Error("Spurs account has no verified email");
 
+    // Resolve (or create) the app's own user row so the session carries our
+    // user id and current role — not just the raw Spurs claims. This also
+    // fixes the session `sub` to match the app's users.id, same as the
+    // password-login path, instead of the external Spurs subject.
+    const [existing] = await db
+      .select({ id: users.id, role: users.role, displayName: users.displayName })
+      .from(users)
+      .where(eq(users.email, user.email))
+      .limit(1);
+
+    const appUser =
+      existing ??
+      (
+        await db
+          .insert(users)
+          .values({
+            email: user.email,
+            displayName: user.name ?? user.email,
+            role: resolveInitialRole(user.email),
+          })
+          .returning({ id: users.id, role: users.role, displayName: users.displayName })
+      )[0];
+
     const token = await issueSessionToken({
-      sub: user.sub,
-      name: user.name,
+      sub: appUser.id,
+      name: appUser.displayName,
       email: user.email,
+      role: appUser.role,
     });
 
     store.set(SESSION_COOKIE, token, {

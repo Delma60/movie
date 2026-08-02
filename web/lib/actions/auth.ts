@@ -6,6 +6,7 @@ import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import { db, users } from "@/lib/db";
 import { issueSessionToken, SESSION_COOKIE } from "@/lib/session";
+import { resolveInitialRole, type UserRole } from "@/lib/roles";
 
 const SESSION_MAX_AGE = 60 * 60 * 24 * 30;
 
@@ -14,11 +15,17 @@ function safeReturnTo(value: FormDataEntryValue | null): string {
   return v.startsWith("/") && !v.startsWith("//") ? v : "/";
 }
 
-async function startSession(user: { id: string; displayName: string; email: string }) {
+async function startSession(user: {
+  id: string;
+  displayName: string;
+  email: string;
+  role: UserRole;
+}) {
   const token = await issueSessionToken({
     sub: user.id,
     name: user.displayName,
     email: user.email,
+    role: user.role,
   });
 
   const store = await cookies();
@@ -75,7 +82,12 @@ export async function registerWithPassword(formData: FormData): Promise<void> {
   const passwordHash = await bcrypt.hash(password, 10);
   const [user] = await db
     .insert(users)
-    .values({ email, displayName: name, passwordHash, role: "user" })
+    .values({
+      email,
+      displayName: name,
+      passwordHash,
+      role: resolveInitialRole(email),
+    })
     .returning();
 
   await startSession(user);

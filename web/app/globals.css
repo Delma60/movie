@@ -288,9 +288,8 @@ a {
 }
 
 /* ==========================================================
-   VELVET HOMEPAGE STYLES
+   VELVET APP SHELL
    ========================================================== */
-
 .vp-root {
   background: var(--background);
   color: var(--foreground);
@@ -304,6 +303,9 @@ a {
   box-sizing: border-box;
 }
 
+/* ==========================================================
+   FILM GRAIN OVERLAY
+   ========================================================== */
 .vp-grain {
   position: fixed;
   inset: 0;
@@ -314,6 +316,9 @@ a {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
+/* ==========================================================
+   NAV
+   ========================================================== */
 .vp-nav {
   position: fixed;
   top: 0;
@@ -323,14 +328,16 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 22px 48px;
+  padding: calc(22px + var(--safe-top)) calc(48px + var(--safe-right)) 22px
+    calc(48px + var(--safe-left));
   transition: background 0.4s ease, padding 0.4s ease, backdrop-filter 0.4s ease;
 }
 
 .vp-nav.scrolled {
   background: rgba(11, 11, 13, 0.85);
   backdrop-filter: blur(14px);
-  padding: 14px 48px;
+  padding-top: calc(14px + var(--safe-top));
+  padding-bottom: 14px;
   border-bottom: 1px solid var(--line);
 }
 
@@ -381,10 +388,13 @@ a {
   cursor: pointer;
   font-size: 16px;
   padding: 6px;
+  min-width: 44px;
+  min-height: 44px;
 }
 
 .vp-icon-btn:hover,
-.vp-icon-btn:focus-visible {
+.vp-icon-btn:focus-visible,
+.vp-icon-btn:active {
   color: var(--text);
 }
 
@@ -395,6 +405,9 @@ a {
   background: linear-gradient(135deg, var(--gold), var(--gold-dim));
 }
 
+/* ==========================================================
+   HERO
+   ========================================================== */
 .vp-hero {
   position: relative;
   height: 92vh;
@@ -430,7 +443,7 @@ a {
 .vp-hero-content {
   position: relative;
   z-index: 2;
-  padding: 0 48px 72px;
+  padding: 0 calc(48px + var(--safe-right)) 72px calc(48px + var(--safe-left));
   max-width: 640px;
 }
 
@@ -484,11 +497,15 @@ a {
   gap: 14px;
 }
 
+/* ==========================================================
+   BUTTONS
+   ========================================================== */
 .vp-btn {
   display: inline-flex;
   align-items: center;
   gap: 10px;
   padding: 14px 28px;
+  min-height: 44px;
   border-radius: 4px;
   font-size: 15px;
   font-weight: 600;
@@ -523,8 +540,11 @@ a {
   background: rgba(245, 244, 242, 0.14);
 }
 
+/* ==========================================================
+   ROWS + CARDS
+   ========================================================== */
 .vp-rows {
-  padding: 8px 0 80px;
+  padding: 8px 0 calc(80px + var(--safe-bottom));
   position: relative;
   z-index: 2;
 }
@@ -537,7 +557,7 @@ a {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 0 48px;
+  padding: 0 calc(48px + var(--safe-right)) 0 calc(48px + var(--safe-left));
   margin-bottom: 16px;
 }
 
@@ -561,12 +581,12 @@ a {
   display: flex;
   gap: 16px;
   overflow-x: auto;
-  padding: 4px 24px 12px;
-  margin: 0 12px;
+  padding: 4px calc(48px + var(--safe-right)) 12px calc(48px + var(--safe-left));
   scroll-snap-type: x proximity;
+  scroll-padding-inline: 12px;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  scroll-padding-inline: 12px;
+  -webkit-overflow-scrolling: touch; /* momentum scroll in WebView */
 }
 
 .vp-row-scroll::-webkit-scrollbar {
@@ -590,17 +610,21 @@ a {
   flex-direction: column;
   justify-content: space-between;
   cursor: pointer;
+  touch-action: manipulation;
   transition: transform 0.28s cubic-bezier(0.2, 0.7, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease;
 }
 
 .vp-poster:hover,
-.vp-poster:focus-visible {
+.vp-poster:focus-visible,
+.vp-poster:active {
   transform: translateY(-6px) scale(1.035);
   box-shadow: 0 22px 40px -14px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--gold-dim);
   z-index: 3;
 }
 
-.vp-poster:hover .vp-poster-play {
+.vp-poster:hover .vp-poster-play,
+.vp-poster:focus-visible .vp-poster-play,
+.vp-poster:active .vp-poster-play {
   opacity: 1;
   transform: scale(1);
 }
@@ -608,23 +632,18 @@ a {
 .vp-variant-0 {
   background: linear-gradient(160deg, #1b1b1f 0%, #3a2a1f 60%, #6b4a2a 100%);
 }
-
 .vp-variant-1 {
   background: linear-gradient(160deg, #14151a 0%, #241b28 55%, #4a2438 100%);
 }
-
 .vp-variant-2 {
   background: linear-gradient(160deg, #101215 0%, #1c2630 55%, #2e4256 100%);
 }
-
 .vp-variant-3 {
   background: linear-gradient(160deg, #16151a 0%, #2a2020 55%, #4a2a24 100%);
 }
-
 .vp-variant-4 {
   background: linear-gradient(160deg, #121316 0%, #1e241f 55%, #33402f 100%);
 }
-
 .vp-variant-5 {
   background: linear-gradient(160deg, #17151c 0%, #2b2030 55%, #4a3560 100%);
 }
@@ -691,6 +710,9 @@ a {
   color: rgba(245, 244, 242, 0.6);
 }
 
+/* Play button is hover-revealed on desktop, but WebView is touch-only —
+   always show it on touch/coarse-pointer devices instead of hiding it
+   behind a hover state nothing can trigger. */
 .vp-poster-play {
   position: absolute;
   top: 50%;
@@ -708,6 +730,13 @@ a {
   color: var(--text);
   opacity: 0;
   transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .vp-poster-play {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
 .vp-progress-track {
@@ -1244,12 +1273,6 @@ a {
   color: var(--wine);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .vp-player-fallback-processing .vp-player-fallback-icon {
-    animation: none;
-  }
-}
-
 /* ----------------------------------------------------------
    INFO
    ---------------------------------------------------------- */
@@ -1334,8 +1357,11 @@ a {
   }
 }
 
+/* ==========================================================
+   FOOTER
+   ========================================================== */
 .vp-footer {
-  padding: 40px 48px 60px;
+  padding: 40px calc(48px + var(--safe-right)) calc(60px + var(--safe-bottom)) calc(48px + var(--safe-left));
   border-top: 1px solid var(--line);
   display: flex;
   justify-content: space-between;
@@ -1367,50 +1393,6 @@ a {
 .vp-footer-copy {
   color: rgba(156, 154, 150, 0.6);
   font-size: 12px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .vp-hero-bg {
-    animation: none;
-  }
-
-  .vp-poster,
-  .vp-poster-play,
-  .vp-nav {
-    transition: none;
-  }
-}
-
-@media (max-width: 720px) {
-  .vp-nav,
-  .vp-hero-content,
-  .vp-row-head,
-  .vp-row-scroll,
-  .vp-footer {
-    padding-left: 20px;
-    padding-right: 20px;
-  }
-
-  .vp-nav-links {
-    display: none;
-  }
-
-  .vp-hero-title {
-    font-size: clamp(36px, 11vw, 56px);
-  }
-
-  .vp-hero-actions {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .vp-card {
-    width: 160px;
-  }
-
-  .vp-poster-initial {
-    font-size: 64px;
-  }
 }
 
 /* ==========================================================
@@ -1471,503 +1453,24 @@ a {
 }
 
 /* ==========================================================
-   FILM GRAIN OVERLAY
-   ========================================================== */
-.vp-grain {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 50;
-  opacity: 0.05;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-/* ==========================================================
-   NAV
-   ========================================================== */
-.vp-nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 40;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: calc(22px + var(--safe-top)) calc(48px + var(--safe-right)) 22px
-    calc(48px + var(--safe-left));
-  transition: background 0.4s ease, padding 0.4s ease, backdrop-filter 0.4s ease;
-}
-
-.vp-nav.scrolled {
-  background: rgba(11, 11, 13, 0.85);
-  backdrop-filter: blur(14px);
-  padding-top: calc(14px + var(--safe-top));
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--line);
-}
-
-.vp-logo {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 22px;
-  letter-spacing: 0.12em;
-  color: var(--text);
-}
-
-.vp-logo span {
-  color: var(--gold);
-}
-
-.vp-nav-links {
-  display: flex;
-  gap: 32px;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-.vp-nav-links a {
-  color: var(--text-dim);
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  transition: color 0.2s ease;
-}
-
-.vp-nav-links a:hover,
-.vp-nav-links a:focus-visible {
-  color: var(--text);
-}
-
-.vp-nav-right {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-
-.vp-icon-btn {
-  background: none;
-  border: none;
-  color: var(--text-dim);
-  cursor: pointer;
-  font-size: 16px;
-  padding: 6px;
-  min-width: 44px;
-  min-height: 44px;
-}
-
-.vp-icon-btn:hover,
-.vp-icon-btn:focus-visible,
-.vp-icon-btn:active {
-  color: var(--text);
-}
-
-.vp-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--gold), var(--gold-dim));
-}
-
-/* ==========================================================
-   HERO
-   ========================================================== */
-.vp-hero {
-  position: relative;
-  height: 92vh;
-  min-height: 560px;
-  display: flex;
-  align-items: flex-end;
-  overflow: hidden;
-}
-
-.vp-hero-bg {
-  position: absolute;
-  inset: -5%;
-  background: linear-gradient(140deg, #1b1420 0%, #2c1e2e 35%, #3a2a2e 60%, #201a1c 100%);
-  animation: kenburns 22s ease-in-out infinite alternate;
-}
-
-@keyframes kenburns {
-  0% {
-    transform: scale(1) translate(0, 0);
-  }
-  100% {
-    transform: scale(1.08) translate(-1%, -1%);
-  }
-}
-
-.vp-hero-scrim {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(11, 11, 13, 0.15) 0%, rgba(11, 11, 13, 0.55) 60%, var(--background) 100%),
-    linear-gradient(90deg, rgba(11, 11, 13, 0.75) 0%, rgba(11, 11, 13, 0.1) 55%);
-}
-
-.vp-hero-content {
-  position: relative;
-  z-index: 2;
-  padding: 0 calc(48px + var(--safe-right)) 72px calc(48px + var(--safe-left));
-  max-width: 640px;
-}
-
-.vp-eyebrow {
-  display: inline-block;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 18px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--gold-dim);
-}
-
-.vp-hero-title {
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(48px, 7vw, 84px);
-  line-height: 1.02;
-  letter-spacing: -0.01em;
-  margin: 0 0 18px;
-}
-
-.vp-hero-meta {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--text-dim);
-  font-size: 14px;
-  margin-bottom: 20px;
-}
-
-.vp-hero-meta .dot {
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: var(--text-dim);
-}
-
-.vp-hero-tagline {
-  font-size: 17px;
-  line-height: 1.6;
-  color: var(--text-dim);
-  margin: 0 0 32px;
-  max-width: 520px;
-}
-
-.vp-hero-actions {
-  display: flex;
-  gap: 14px;
-}
-
-/* ==========================================================
-   BUTTONS
-   ========================================================== */
-.vp-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 14px 28px;
-  min-height: 44px;
-  border-radius: 4px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  border: 1px solid transparent;
-  transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
-}
-
-.vp-btn:active {
-  transform: scale(0.97);
-}
-
-.vp-btn-primary {
-  background: var(--gold);
-  color: #1a1310;
-}
-
-.vp-btn-primary:hover,
-.vp-btn-primary:focus-visible {
-  background: #dab98c;
-}
-
-.vp-btn-secondary {
-  background: rgba(245, 244, 242, 0.07);
-  color: var(--text);
-  border-color: rgba(245, 244, 242, 0.18);
-  backdrop-filter: blur(6px);
-}
-
-.vp-btn-secondary:hover,
-.vp-btn-secondary:focus-visible {
-  background: rgba(245, 244, 242, 0.14);
-}
-
-/* ==========================================================
-   ROWS + CARDS
-   ========================================================== */
-.vp-rows {
-  padding: 8px 0 calc(80px + var(--safe-bottom));
-  position: relative;
-  z-index: 2;
-}
-
-.vp-row {
-  margin-bottom: 44px;
-}
-
-.vp-row-head {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 0 calc(48px + var(--safe-right)) 0 calc(48px + var(--safe-left));
-  margin-bottom: 16px;
-}
-
-.vp-row-eyebrow {
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text);
-  white-space: nowrap;
-}
-
-.vp-row-rule {
-  height: 1px;
-  flex: 1;
-  background: linear-gradient(90deg, var(--gold-dim), transparent);
-  opacity: 0.5;
-}
-
-.vp-row-scroll {
-  display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  padding: 4px calc(48px + var(--safe-right)) 12px calc(48px + var(--safe-left));
-  scroll-snap-type: x proximity;
-  -webkit-overflow-scrolling: touch; /* momentum scroll in WebView */
-}
-
-.vp-card {
-  flex: 0 0 auto;
-  width: 230px;
-  scroll-snap-align: start;
-}
-
-.vp-poster {
-  position: relative;
-  aspect-ratio: 2 / 3;
-  border-radius: 6px;
-  overflow: hidden;
-  border: 1px solid var(--line);
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  cursor: pointer;
-  touch-action: manipulation;
-  transition: transform 0.28s cubic-bezier(0.2, 0.7, 0.3, 1), box-shadow 0.28s ease, border-color 0.28s ease;
-}
-
-.vp-poster:hover,
-.vp-poster:focus-visible,
-.vp-poster:active {
-  transform: translateY(-6px) scale(1.035);
-  box-shadow: 0 22px 40px -14px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--gold-dim);
-  z-index: 3;
-}
-
-.vp-poster:hover .vp-poster-play,
-.vp-poster:focus-visible .vp-poster-play,
-.vp-poster:active .vp-poster-play {
-  opacity: 1;
-  transform: scale(1);
-}
-
-.vp-variant-0 {
-  background: linear-gradient(160deg, #1b1b1f 0%, #3a2a1f 60%, #6b4a2a 100%);
-}
-.vp-variant-1 {
-  background: linear-gradient(160deg, #14151a 0%, #241b28 55%, #4a2438 100%);
-}
-.vp-variant-2 {
-  background: linear-gradient(160deg, #101215 0%, #1c2630 55%, #2e4256 100%);
-}
-.vp-variant-3 {
-  background: linear-gradient(160deg, #16151a 0%, #2a2020 55%, #4a2a24 100%);
-}
-.vp-variant-4 {
-  background: linear-gradient(160deg, #121316 0%, #1e241f 55%, #33402f 100%);
-}
-.vp-variant-5 {
-  background: linear-gradient(160deg, #17151c 0%, #2b2030 55%, #4a3560 100%);
-}
-
-.vp-poster-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-.vp-poster-eyebrow {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: rgba(245, 244, 242, 0.65);
-}
-
-.vp-badge {
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 3px 7px;
-  border-radius: 3px;
-}
-
-.vp-badge-new {
-  background: var(--wine);
-  color: #f5e9ea;
-}
-
-.vp-badge-original {
-  background: transparent;
-  border: 1px solid var(--gold);
-  color: var(--gold);
-}
-
-.vp-poster-initial {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 300;
-  font-size: 96px;
-  line-height: 1;
-  color: rgba(245, 244, 242, 0.14);
-  align-self: center;
-}
-
-.vp-poster-footer {
-  position: relative;
-  z-index: 1;
-}
-
-.vp-poster-title {
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: 17px;
-  line-height: 1.25;
-  margin-bottom: 4px;
-}
-
-.vp-poster-meta {
-  font-size: 11.5px;
-  color: rgba(245, 244, 242, 0.6);
-}
-
-/* Play button is hover-revealed on desktop, but WebView is touch-only —
-   always show it on touch/coarse-pointer devices instead of hiding it
-   behind a hover state nothing can trigger. */
-.vp-poster-play {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(0.85);
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: rgba(11, 11, 13, 0.55);
-  border: 1px solid rgba(245, 244, 242, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  color: var(--text);
-  opacity: 0;
-  transition: opacity 0.25s ease, transform 0.25s ease;
-}
-
-@media (hover: none) and (pointer: coarse) {
-  .vp-poster-play {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-}
-
-.vp-progress-track {
-  position: absolute;
-  left: 16px;
-  right: 16px;
-  bottom: 16px;
-  height: 3px;
-  background: rgba(245, 244, 242, 0.2);
-  border-radius: 2px;
-  overflow: hidden;
-}
-
-.vp-progress-fill {
-  height: 100%;
-  background: var(--gold);
-}
-
-/* ==========================================================
-   FOOTER
-   ========================================================== */
-.vp-footer {
-  padding: 40px calc(48px + var(--safe-right)) calc(60px + var(--safe-bottom)) calc(48px + var(--safe-left));
-  border-top: 1px solid var(--line);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
-  position: relative;
-  z-index: 2;
-}
-
-.vp-footer-links {
-  display: flex;
-  gap: 24px;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.vp-footer-links a {
-  color: var(--text-dim);
-  text-decoration: none;
-  font-size: 13px;
-}
-
-.vp-footer-links a:hover {
-  color: var(--text);
-}
-
-.vp-footer-copy {
-  color: rgba(156, 154, 150, 0.6);
-  font-size: 12px;
-}
-
-/* ==========================================================
    MOTION / ACCESSIBILITY
    ========================================================== */
 @media (prefers-reduced-motion: reduce) {
   .vp-hero-bg {
     animation: none;
   }
+
   .vp-poster,
   .vp-poster-play,
   .vp-nav,
   .vp-btn {
     transition: none;
   }
-}
 
+  .vp-player-fallback-processing .vp-player-fallback-icon {
+    animation: none;
+  }
+}
 
 /* ==========================================================
    RESPONSIVE
@@ -1981,19 +1484,24 @@ a {
     padding-left: calc(20px + var(--safe-left));
     padding-right: calc(20px + var(--safe-right));
   }
+
   .vp-nav-links {
     display: none;
   }
+
   .vp-hero-title {
     font-size: clamp(36px, 11vw, 56px);
   }
+
   .vp-hero-actions {
     flex-direction: column;
     align-items: stretch;
   }
+
   .vp-card {
     width: 160px;
   }
+
   .vp-poster-initial {
     font-size: 64px;
   }
