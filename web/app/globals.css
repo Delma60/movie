@@ -865,6 +865,53 @@ a {
   font-size: 15px;
 }
 
+/* ==========================================================
+   MY LIST PAGE
+   ========================================================== */
+.vp-my-list-page {
+  padding-bottom: calc(96px + var(--safe-bottom));
+}
+
+.vp-mylist-card {
+  position: relative;
+  transition: opacity 0.2s ease;
+}
+
+.vp-mylist-card.is-removing {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.vp-mylist-remove {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 4;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid rgba(245, 244, 242, 0.25);
+  background: rgba(11, 11, 13, 0.65);
+  backdrop-filter: blur(4px);
+  color: var(--text);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+}
+
+.vp-mylist-remove:hover,
+.vp-mylist-remove:focus-visible {
+  border-color: var(--wine);
+  background: rgba(122, 38, 50, 0.55);
+}
+
+.vp-mylist-remove:active {
+  transform: scale(0.92);
+}
+
 /* ----------------------------------------------------------
    RESPONSIVE
    ---------------------------------------------------------- */
