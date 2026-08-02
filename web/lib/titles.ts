@@ -1,17 +1,12 @@
 import { db, titles } from "@/lib/db";
 import type { Title } from "@/lib/db/schema";
 import { and, asc, desc, eq } from "drizzle-orm";
+import { BROWSE_SORTS, type BrowseSort } from "@/lib/browse-options";
 
 export type TitleType = "movie" | "series";
 
-export type BrowseSort = "newest" | "oldest" | "title-asc" | "title-desc";
-
-export const BROWSE_SORTS: { value: BrowseSort; label: string }[] = [
-  { value: "newest", label: "Newest" },
-  { value: "oldest", label: "Oldest" },
-  { value: "title-asc", label: "Title A–Z" },
-  { value: "title-desc", label: "Title Z–A" },
-];
+export { BROWSE_SORTS };
+export type { BrowseSort };
 
 export interface BrowseFilters {
   genre?: string;

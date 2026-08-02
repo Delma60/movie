@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { BROWSE_SORTS, type BrowseSort } from "@/lib/titles";
+import { BROWSE_SORTS, type BrowseSort } from "@/lib/browse-options";
 
 interface BrowseFiltersProps {
   genres: string[];

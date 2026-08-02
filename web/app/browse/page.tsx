@@ -6,9 +6,9 @@ import {
   getBrowseTitles,
   formatDuration,
   isRecent,
-  type BrowseSort,
   type TitleType,
 } from "@/lib/titles";
+import type { BrowseSort } from "@/lib/browse-options";
 
 interface BrowsePageProps {
   searchParams: Promise<{
