@@ -9,7 +9,11 @@ interface BrowseFiltersProps {
   resultCount: number;
 }
 
-export function BrowseFilters({ genres, years, resultCount }: BrowseFiltersProps) {
+export function BrowseFilters({
+  genres,
+  years,
+  resultCount,
+}: BrowseFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 

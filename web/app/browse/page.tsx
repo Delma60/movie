@@ -19,7 +19,12 @@ interface BrowsePageProps {
   }>;
 }
 
-const VALID_SORTS: BrowseSort[] = ["newest", "oldest", "title-asc", "title-desc"];
+const VALID_SORTS: BrowseSort[] = [
+  "newest",
+  "oldest",
+  "title-asc",
+  "title-desc",
+];
 const VALID_TYPES: TitleType[] = ["movie", "series"];
 
 export default async function BrowsePage({ searchParams }: BrowsePageProps) {
@@ -48,7 +53,11 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
         </p>
       </div>
 
-      <BrowseFilters genres={genres} years={years} resultCount={results.length} />
+      <BrowseFilters
+        genres={genres}
+        years={years}
+        resultCount={results.length}
+      />
 
       {results.length === 0 ? (
         <div className="vp-browse-empty">
