@@ -7,7 +7,12 @@ import React, { useEffect, useState } from "react";
    Fictional brand, fictional titles, no real IP referenced.
 --------------------------------------------------------- */
 
-const NAV_LINKS = ["Home", "Movies", "Series", "My List"];
+const NAV_LINKS = [
+  { label: "Home", href: "/" },
+  { label: "Movies", href: "/browse?type=movie" },
+  { label: "Series", href: "/browse?type=series" },
+  { label: "My List", href: "/my-list" },
+];
 
 const CONTINUE_WATCHING = [
   {
@@ -104,7 +109,6 @@ const BECAUSE_YOU_WATCHED = [
   { title: "Tomorrow's Static", genre: "Sci-Fi", meta: "2h 00m · 2026" },
 ];
 
-
 function Row({ eyebrow, items }: { eyebrow: string; items: PosterItem[] }) {
   return (
     <section className="vp-row">
@@ -140,8 +144,8 @@ export default function VelvetHomepage() {
         </div>
         <ul className="vp-nav-links">
           {NAV_LINKS.map((l) => (
-            <li key={l}>
-              <a href="#">{l}</a>
+            <li key={l.label}>
+              <a href={l.href}>{l.label}</a>
             </li>
           ))}
         </ul>

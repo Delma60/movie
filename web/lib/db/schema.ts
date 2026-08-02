@@ -263,3 +263,4 @@ export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
 
 
 export type StorageBucket = typeof storageBuckets.$inferSelect;
+export type Title = typeof titles.$inferSelect;
