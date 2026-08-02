@@ -14,7 +14,9 @@ export default async function LoginPage({
   searchParams: Promise<{ error?: string; returnTo?: string }>;
 }) {
   const { error, returnTo } = await searchParams;
-  const message = error ? (ERRORS[error] ?? "Sign-in failed. Please try again.") : null;
+  const message = error
+    ? (ERRORS[error] ?? "Sign-in failed. Please try again.")
+    : null;
   const target = returnTo ?? "/";
   const spursHref = returnTo
     ? `/auth/login?returnTo=${encodeURIComponent(returnTo)}`
@@ -24,7 +26,9 @@ export default async function LoginPage({
     <main className="vp-root vp-login">
       <div className="vp-login-card">
         <h1 className="vp-login-title">Sign in to Velvet</h1>
-        <p className="vp-login-subtitle">Use your email or continue with Spurs.</p>
+        <p className="vp-login-subtitle">
+          Use your email or continue with Spurs.
+        </p>
 
         {message && <div className="vp-login-error">{message}</div>}
 
@@ -57,8 +61,10 @@ export default async function LoginPage({
         </a>
 
         <p className="vp-login-switch">
-          New to Velvet?{' '}
-          <a href={`/signup${returnTo ? `?returnTo=${encodeURIComponent(returnTo)}` : ""}`}>
+          New to Velvet?{" "}
+          <a
+            href={`/signup${returnTo ? `?returnTo=${encodeURIComponent(returnTo)}` : ""}`}
+          >
             Create an account
           </a>
         </p>
