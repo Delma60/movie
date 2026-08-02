@@ -37,7 +37,10 @@ export function Navbar() {
 
           return (
             <li key={link.label}>
-              <Link href={link.href} className={isActive ? "active" : undefined}>
+              <Link
+                href={link.href}
+                className={isActive ? "active" : undefined}
+              >
                 {link.label}
               </Link>
             </li>

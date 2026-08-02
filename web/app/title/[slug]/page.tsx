@@ -26,7 +26,9 @@ export default async function TitlePage({ params }: TitlePageProps) {
   if (!title) notFound();
 
   const [episodes, related] = await Promise.all([
-    title.type === "series" ? getEpisodesForTitle(title.id) : Promise.resolve([]),
+    title.type === "series"
+      ? getEpisodesForTitle(title.id)
+      : Promise.resolve([]),
     getRelatedTitles(title),
   ]);
 
@@ -56,16 +58,23 @@ export default async function TitlePage({ params }: TitlePageProps) {
             <span aria-current="page">{title.title}</span>
           </nav>
 
-          {title.isOriginal && <span className="vp-eyebrow">Velvet Original</span>}
+          {title.isOriginal && (
+            <span className="vp-eyebrow">Velvet Original</span>
+          )}
 
           <h1 className="vp-title-hero-title">{title.title}</h1>
 
           <div className="vp-hero-meta">{interleaveWithDots(metaParts)}</div>
 
-          {title.synopsis && <p className="vp-hero-tagline">{title.synopsis}</p>}
+          {title.synopsis && (
+            <p className="vp-hero-tagline">{title.synopsis}</p>
+          )}
 
           <div className="vp-hero-actions">
-            <Link href={`/watch/${title.slug}`} className="vp-btn vp-btn-primary">
+            <Link
+              href={`/watch/${title.slug}`}
+              className="vp-btn vp-btn-primary"
+            >
               ▶ Play
             </Link>
             <button className="vp-btn vp-btn-secondary">+ My List</button>

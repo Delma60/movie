@@ -8,7 +8,10 @@ interface WatchPageProps {
   searchParams: Promise<{ ep?: string }>;
 }
 
-export default async function WatchPage({ params, searchParams }: WatchPageProps) {
+export default async function WatchPage({
+  params,
+  searchParams,
+}: WatchPageProps) {
   const { slug } = await params;
   const { ep } = await searchParams;
 
@@ -25,16 +28,15 @@ export default async function WatchPage({ params, searchParams }: WatchPageProps
     : title.title;
 
   const nextEpisode = currentEpisode
-    ?
-        episodes.find(
-          (e) =>
-            e.season === currentEpisode.season &&
-            e.episodeNumber === currentEpisode.episodeNumber + 1
-        ) ??
-        episodes.find(
-          (e) => e.season === currentEpisode.season + 1 && e.episodeNumber === 1
-        ) ??
-        null
+    ? (episodes.find(
+        (e) =>
+          e.season === currentEpisode.season &&
+          e.episodeNumber === currentEpisode.episodeNumber + 1,
+      ) ??
+      episodes.find(
+        (e) => e.season === currentEpisode.season + 1 && e.episodeNumber === 1,
+      ) ??
+      null)
     : null;
 
   return (
@@ -45,7 +47,11 @@ export default async function WatchPage({ params, searchParams }: WatchPageProps
         </Link>
       </div>
 
-      <VideoPlayer src={videoAsset?.sourceUrl} variant={variant} label={label} />
+      <VideoPlayer
+        src={videoAsset?.sourceUrl}
+        variant={variant}
+        label={label}
+      />
 
       <div className="vp-watch-info">
         <div className="vp-watch-info-main">
@@ -53,7 +59,9 @@ export default async function WatchPage({ params, searchParams }: WatchPageProps
           {currentEpisode?.synopsis ? (
             <p className="vp-watch-synopsis">{currentEpisode.synopsis}</p>
           ) : (
-            title.synopsis && <p className="vp-watch-synopsis">{title.synopsis}</p>
+            title.synopsis && (
+              <p className="vp-watch-synopsis">{title.synopsis}</p>
+            )
           )}
         </div>
         {nextEpisode && (
@@ -76,7 +84,10 @@ export default async function WatchPage({ params, searchParams }: WatchPageProps
             {episodes.map((e) => {
               const active = currentEpisode?.id === e.id;
               return (
-                <li key={e.id} className={`vp-episode-row${active ? " active" : ""}`}>
+                <li
+                  key={e.id}
+                  className={`vp-episode-row${active ? " active" : ""}`}
+                >
                   <span className="vp-episode-number">{e.episodeNumber}</span>
                   <div className="vp-episode-info">
                     <span className="vp-episode-title">{e.name}</span>
@@ -88,7 +99,10 @@ export default async function WatchPage({ params, searchParams }: WatchPageProps
                     {formatDuration(e.durationMinutes) ?? "—"}
                   </span>
                   {active ? (
-                    <span className="vp-episode-playing" aria-label="Now playing">
+                    <span
+                      className="vp-episode-playing"
+                      aria-label="Now playing"
+                    >
                       ●
                     </span>
                   ) : (
