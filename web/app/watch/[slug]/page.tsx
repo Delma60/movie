@@ -49,6 +49,7 @@ export default async function WatchPage({
 
       <VideoPlayer
         src={videoAsset?.sourceUrl}
+        status={videoAsset?.status ?? null}
         variant={variant}
         label={label}
       />

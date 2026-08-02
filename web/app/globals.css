@@ -980,6 +980,30 @@ a {
   margin: 0;
 }
 
+.vp-player-fallback-processing .vp-player-fallback-icon {
+  animation: vp-processing-spin 1.6s linear infinite;
+}
+
+@keyframes vp-processing-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.vp-player-fallback-failed .vp-player-fallback-icon {
+  border-color: var(--wine);
+  color: var(--wine);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vp-player-fallback-processing .vp-player-fallback-icon {
+    animation: none;
+  }
+}
+
 /* ----------------------------------------------------------
    INFO
    ---------------------------------------------------------- */
