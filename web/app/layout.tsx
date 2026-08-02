@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Manrope, Geist_Mono } from "next/font/google";
 import { Navbar } from "@/components/Navbar";
+import { getSession } from "@/lib/auth";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -26,18 +27,20 @@ export const metadata: Metadata = {
   viewport: "width=device-width, initial-scale=1, viewport-fit=cover",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getSession();
+
   return (
     <html
       lang="en"
       className={`${fraunces.variable} ${manrope.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <Navbar />
+        <Navbar user={session} />
         {children}
       </body>
     </html>

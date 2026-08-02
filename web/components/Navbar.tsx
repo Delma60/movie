@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import type { SessionUser } from "@/lib/session";
 
 const NAV_LINKS = [
   { label: "Home", href: "/" },
@@ -12,7 +13,11 @@ const NAV_LINKS = [
   { label: "My List", href: "/my-list" },
 ];
 
-export function Navbar() {
+interface NavbarProps {
+  user: SessionUser | null;
+}
+
+export function Navbar({ user }: NavbarProps) {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
 
@@ -22,6 +27,9 @@ export function Navbar() {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const label = user?.name?.trim() || user?.email?.trim() || "";
+  const initial = label ? label[0].toUpperCase() : "?";
 
   return (
     <nav className={`vp-nav ${scrolled ? "scrolled" : ""}`}>
@@ -51,10 +59,42 @@ export function Navbar() {
         <button className="vp-icon-btn" aria-label="Search">
           ⌕
         </button>
-        <button className="vp-icon-btn" aria-label="Notifications">
-          ◔
-        </button>
-        <div className="vp-avatar" />
+
+        {user ? (
+          <>
+            <button className="vp-icon-btn" aria-label="Notifications">
+              ◔
+            </button>
+            <Link
+              href="/account"
+              className="vp-avatar"
+              aria-label={`Account: ${label || "signed in"}`}
+              title={label}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                color: "#1a1310",
+                fontWeight: 700,
+                fontSize: 13,
+                textDecoration: "none",
+              }}
+            >
+              {initial}
+            </Link>
+            <a href="/auth/logout" className="vp-icon-btn" aria-label="Sign out">
+              ⎋
+            </a>
+          </>
+        ) : (
+          <Link
+            href={`/login?returnTo=${encodeURIComponent(pathname || "/")}`}
+            className="vp-btn vp-btn-secondary"
+            style={{ padding: "8px 16px", fontSize: 13 }}
+          >
+            Sign In
+          </Link>
+        )}
       </div>
     </nav>
   );
