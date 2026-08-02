@@ -82,7 +82,11 @@ export function Navbar({ user }: NavbarProps) {
             >
               {initial}
             </Link>
-            <a href="/auth/logout" className="vp-icon-btn" aria-label="Sign out">
+            <a
+              href="/auth/logout"
+              className="vp-icon-btn"
+              aria-label="Sign out"
+            >
               ⎋
             </a>
           </>
