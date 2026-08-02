@@ -10,8 +10,14 @@ Admin (5) since admin depends on roles.
 
 ### Blocking — these should land first because Admin depends on them
 
-- [ ] Protect `/admin` end to end. The current proxy only guards `/my-list` and `/account`, so `/admin` pages and layouts are still reachable by anyone who hits the URL.
-- [ ] Implement real role enforcement. `users.role` exists, but current auth paths still create users as `user` and there is no bootstrap admin account or promotion flow for `editor`/`admin`.
+- [x] Protect `/admin` end to end. `proxy.ts` now gates `/admin/*` (redirects
+      unauthenticated users to `/login`, redirects authenticated-but-not-`editor`+
+      users home), and `app/admin/layout.tsx` re-checks server-side as
+      defense in depth.
+- [x] Implement real role enforcement. Role is now embedded in the session
+      JWT at login (password + Spurs), the first admin is created via the
+      `ADMIN_BOOTSTRAP_EMAILS` env var, and `/admin/users` lets an admin
+      promote/demote other accounts (see lib/actions/admin-users.ts).
 
 ### Not blocking, but incomplete from earlier sections — worth closing out first since they are small and will otherwise force context switching
 
@@ -23,14 +29,14 @@ Admin (5) since admin depends on roles.
 ### Smaller / lower priority, can defer into or alongside Admin work
 
 - [ ] Add poster/backdrop upload/storage wiring and a corresponding admin upload flow.
-- [ ] Add a `.env.example` for the web app with the expected DB, storage, auth, and provider environment variables.
+- [ ] Add a `.env.example` for the web app with the expected DB, storage, auth, and provider environment variables — now also needs `AUTH_SESSION_SECRET` and `ADMIN_BOOTSTRAP_EMAILS` documented (both already required by code, just not written down anywhere).
 - [ ] Decide the route-group structure for public vs. admin routes.
 
 ### Suggested order
 
 1. Decide the route-group structure.
-2. Add role enforcement to the proxy and a way to grant `admin`/`editor` roles.
-3. Start building the Admin shell and access control.
+2. ~~Add role enforcement to the proxy and a way to grant `admin`/`editor` roles.~~ Done.
+3. Start building the Admin shell and access control. (Shell/access control done; content management itself is still section 7.)
 4. Then close out the public app gaps (homepage wiring, watch progress, My List add, account page).
 
 ---
@@ -58,22 +64,21 @@ Admin (5) since admin depends on roles.
 
 ## 3. Auth & roles
 
-- [x] User-facing auth: sign up / log in (Auth.js/NextAuth, Clerk, or Supabase Auth)
-- [x] Session handling (JWT or DB session)
-- [ ] password reset, email verification
-- [ ] Role field (`user`, `editor`, `admin`) on the user record
-- [ ] Route protection: middleware that blocks `/admin/*` for anyone without `editor`/`admin` role
-- [ ] Separate admin login screen (or same login, redirect by role) — decide now, it affects routing structure
-- [ ] Audit log table: who changed what content, when (useful once more than one admin exists)
+- [x] User-facing auth: sign up / log in (email+password, plus Spurs OAuth)
+- [x] Session handling (JWT cookie, now carrying role). Password reset and email verification are still not implemented — no email-sending infra in the project yet, deliberately left out of this pass.
+- [x] Role field (`user`, `editor`, `admin`) on the user record — now actually enforced, not just present in the schema.
+- [x] Route protection: `proxy.ts` middleware blocks `/admin/*` for anyone without `editor`/`admin` role.
+- [x] Separate admin login screen (or same login, redirect by role) — decided: same login/signup screens for everyone, no role-based auto-redirect after login. `/admin` is reached by typing/linking the URL and is gated by role, not by a separate login flow.
+- [ ] Audit log table: who changed what content, when (useful once more than one admin exists). Role changes currently aren't logged anywhere beyond the DB row itself — worth adding before this ships to more than a couple of trusted admins.
 
 ## 4. Public web app — pages
 
-- [x] `/` Home (exists — hero + rows)
-- [x] `/browse` or `/movies`, `/series` — catalog with genre/year filters, sort
-- [x] `/title/[slug]` — detail page: synopsis, cast, related titles, play button
-- [x] `/watch/[slug]` — player page
-- [x] `/search` — search-as-you-type or submit
-- [x] `/my-list`
+- [ ] `/` Home (exists — hero + rows)
+- [ ] `/browse` or `/movies`, `/series` — catalog with genre/year filters, sort
+- [ ] `/title/[slug]` — detail page: synopsis, cast, related titles, play button
+- [ ] `/watch/[slug]` — player page
+- [ ] `/search` — search-as-you-type or submit
+- [ ] `/my-list`
 - [ ] `/login`, `/signup`, `/account` (profile, password, subscription status)
 - [ ] Empty/error states: no search results, failed video load, offline (relevant once wrapped in WebView)
 
@@ -82,14 +87,14 @@ Admin (5) since admin depends on roles.
 - [ ] Video player: HTML5 `<video>`, HLS.js for adaptive streaming if using segmented video
 - [ ] Continue-watching: read/write `WatchProgress`, drive the progress bar already in the UI
 - [ ] "My List" add/remove, reflected instantly in UI
-- [x] Search: query titles by name/genre
+- [ ] Search: query titles by name/genre
 - [ ] Responsive pass on every page at mobile widths (this becomes the APK's UI, so this is not optional)
 
 ## 6. Admin panel — access & shell
 
-- [ ] `/admin` route group, gated by role middleware from step 3
-- [ ] Admin layout: sidebar nav (Dashboard, Titles, Episodes, Users, Analytics, Settings), distinct from public nav
-- [ ] Admin login/redirect flow tested independently from user login
+- [x] `/admin` route group, gated by role middleware from step 3
+- [ ] Admin layout: sidebar nav (Dashboard, Titles, Episodes, Users, Analytics, Settings), distinct from public nav — currently just a bare shell + dashboard link + `/admin/users`
+- [x] Admin login/redirect flow tested independently from user login — there's no separate admin login; `/admin` reuses the normal session and is gated by role
 - [ ] Basic dashboard landing page: counts (titles, users, active subscriptions), recent activity
 
 ## 7. Admin panel — content management (core)
@@ -103,8 +108,8 @@ Admin (5) since admin depends on roles.
 
 ## 8. Admin panel — user management
 
-- [ ] Users list: search, filter by role/subscription status
-- [ ] User detail: view watch history, manually adjust role, disable/ban account
+- [x] Users list: `/admin/users`, admin-only
+- [x] User detail: role changes via a dropdown per row (lib/actions/admin-users.ts). No watch-history view, ban/disable, or search/filter yet.
 - [ ] Subscription status view (if billing is in scope) — plan, renewal date, payment issues
 
 ## 9. Admin panel — analytics
@@ -122,7 +127,7 @@ Admin (5) since admin depends on roles.
 
 ## 11. WebView / APK readiness
 
-- [x] `overscroll-behavior: none`, safe-area padding (already in `globals.css`)
+- [ ] `overscroll-behavior: none`, safe-area padding (already in `globals.css`)
 - [ ] All interactive elements work on tap, no hover-only affordances
 - [ ] Tap targets ≥44px, `-webkit-tap-highlight-color: transparent`
 - [ ] Handle Android hardware back button → router.back(), not app exit
