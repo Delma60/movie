@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PosterCard } from "@/components/PosterCard";
+import { addToMyListAction } from "@/lib/actions/my-list";
 import {
   getTitleBySlug,
   getEpisodesForTitle,
@@ -77,7 +78,12 @@ export default async function TitlePage({ params }: TitlePageProps) {
             >
               ▶ Play
             </Link>
-            <button className="vp-btn vp-btn-secondary">+ My List</button>
+            <form action={addToMyListAction} className="vp-inline-form">
+              <input type="hidden" name="titleId" value={title.id} />
+              <button type="submit" className="vp-btn vp-btn-secondary">
+                + My List
+              </button>
+            </form>
           </div>
         </div>
       </section>

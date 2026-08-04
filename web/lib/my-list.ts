@@ -17,6 +17,18 @@ export async function getMyListTitles(userId: string): Promise<MyListItem[]> {
   return rows.map((row) => ({ ...row.title, addedAt: row.addedAt }));
 }
 
+export async function addToMyList(userId: string, titleId: string): Promise<void> {
+  const existing = await db
+    .select()
+    .from(myList)
+    .where(and(eq(myList.userId, userId), eq(myList.titleId, titleId)))
+    .limit(1);
+
+  if (existing.length > 0) return;
+
+  await db.insert(myList).values({ userId, titleId });
+}
+
 export async function removeFromMyList(
   userId: string,
   titleId: string

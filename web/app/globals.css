@@ -330,15 +330,20 @@ a {
   justify-content: space-between;
   padding: calc(22px + var(--safe-top)) calc(48px + var(--safe-right)) 22px
     calc(48px + var(--safe-left));
-  transition: background 0.4s ease, padding 0.4s ease, backdrop-filter 0.4s ease;
+  background: rgba(11, 11, 13, 0.18);
+  backdrop-filter: blur(0px);
+  border-bottom: 1px solid transparent;
+  transition: background-color 220ms ease, backdrop-filter 220ms ease,
+    border-color 220ms ease, box-shadow 220ms ease, padding 220ms ease;
 }
 
 .vp-nav.scrolled {
-  background: rgba(11, 11, 13, 0.85);
+  background: rgba(11, 11, 13, 0.84);
   backdrop-filter: blur(14px);
   padding-top: calc(14px + var(--safe-top));
   padding-bottom: 14px;
-  border-bottom: 1px solid var(--line);
+  border-bottom-color: var(--line);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 }
 
 .vp-logo {
