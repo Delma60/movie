@@ -15,6 +15,8 @@ export interface AppUser {
   email: string;
   displayName: string;
   role: UserRole;
+  createdAt: Date;
+  sessionVersion?: number;
 }
 
 const APP_USER_COLUMNS = {
@@ -22,6 +24,7 @@ const APP_USER_COLUMNS = {
   email: users.email,
   displayName: users.displayName,
   role: users.role,
+  createdAt: users.createdAt,
 };
 
 /**

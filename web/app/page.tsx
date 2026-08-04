@@ -40,8 +40,18 @@ const CONTINUE_WATCHING = [
 ];
 
 const TRENDING = [
-  { title: "Glass Horizon", genre: "Sci-Fi", meta: "2h 08m · 2026", href: "/title/glass-horizon" },
-  { title: "The Long Ferry", genre: "Drama", meta: "1h 47m · 2025", href: "/title/the-long-ferry" },
+  {
+    title: "Glass Horizon",
+    genre: "Sci-Fi",
+    meta: "2h 08m · 2026",
+    href: "/title/glass-horizon",
+  },
+  {
+    title: "The Long Ferry",
+    genre: "Drama",
+    meta: "1h 47m · 2025",
+    href: "/title/the-long-ferry",
+  },
   {
     title: "Ashes of Callisto",
     genre: "Sci-Fi",
@@ -49,13 +59,34 @@ const TRENDING = [
     badge: "New",
     href: "/title/ashes-of-callisto",
   },
-  { title: "A Quiet Currency", genre: "Thriller", meta: "1h 59m · 2025", href: "/title/a-quiet-currency" },
-  { title: "Nine Days in Lisbon", genre: "Romance", meta: "1h 42m · 2024", href: "/title/nine-days-in-lisbon" },
-  { title: "The Understudy", genre: "Drama", meta: "2h 02m · 2026", href: "/title/the-understudy" },
+  {
+    title: "A Quiet Currency",
+    genre: "Thriller",
+    meta: "1h 59m · 2025",
+    href: "/title/a-quiet-currency",
+  },
+  {
+    title: "Nine Days in Lisbon",
+    genre: "Romance",
+    meta: "1h 42m · 2024",
+    href: "/title/nine-days-in-lisbon",
+  },
+  {
+    title: "The Understudy",
+    genre: "Drama",
+    meta: "2h 02m · 2026",
+    href: "/title/the-understudy",
+  },
 ];
 
 const NEW_RELEASES = [
-  { title: "Paper Moths", genre: "Drama", meta: "1h 51m · 2026", badge: "New", href: "/title/paper-moths" },
+  {
+    title: "Paper Moths",
+    genre: "Drama",
+    meta: "1h 51m · 2026",
+    badge: "New",
+    href: "/title/paper-moths",
+  },
   {
     title: "Vantage Point Zero",
     genre: "Thriller",
@@ -70,9 +101,24 @@ const NEW_RELEASES = [
     badge: "New",
     href: "/title/the-hollow-choir",
   },
-  { title: "Low Tide, High Noon", genre: "Western", meta: "2h 05m · 2026", href: "/title/low-tide-high-noon" },
-  { title: "Static & Season", genre: "Drama", meta: "1h 49m · 2026", href: "/title/static-season" },
-  { title: "The Quiet Machinist", genre: "Drama", meta: "1h 56m · 2026", href: "/title/the-quiet-machinist" },
+  {
+    title: "Low Tide, High Noon",
+    genre: "Western",
+    meta: "2h 05m · 2026",
+    href: "/title/low-tide-high-noon",
+  },
+  {
+    title: "Static & Season",
+    genre: "Drama",
+    meta: "1h 49m · 2026",
+    href: "/title/static-season",
+  },
+  {
+    title: "The Quiet Machinist",
+    genre: "Drama",
+    meta: "1h 56m · 2026",
+    href: "/title/the-quiet-machinist",
+  },
 ];
 
 const ORIGINALS = [
@@ -114,11 +160,36 @@ const ORIGINALS = [
 ];
 
 const BECAUSE_YOU_WATCHED = [
-  { title: "The Signal Between Us", genre: "Sci-Fi", meta: "2h 01m · 2025", href: "/title/the-signal-between-us" },
-  { title: "Orbital Drift", genre: "Sci-Fi", meta: "1h 55m · 2024", href: "/title/orbital-drift" },
-  { title: "Half-Light", genre: "Mystery", meta: "2h 10m · 2026", href: "/title/half-light" },
-  { title: "The Last Transmission", genre: "Thriller", meta: "1h 47m · 2025", href: "/title/the-last-transmission" },
-  { title: "Tomorrow's Static", genre: "Sci-Fi", meta: "2h 00m · 2026", href: "/title/tomorrows-static" },
+  {
+    title: "The Signal Between Us",
+    genre: "Sci-Fi",
+    meta: "2h 01m · 2025",
+    href: "/title/the-signal-between-us",
+  },
+  {
+    title: "Orbital Drift",
+    genre: "Sci-Fi",
+    meta: "1h 55m · 2024",
+    href: "/title/orbital-drift",
+  },
+  {
+    title: "Half-Light",
+    genre: "Mystery",
+    meta: "2h 10m · 2026",
+    href: "/title/half-light",
+  },
+  {
+    title: "The Last Transmission",
+    genre: "Thriller",
+    meta: "1h 47m · 2025",
+    href: "/title/the-last-transmission",
+  },
+  {
+    title: "Tomorrow's Static",
+    genre: "Sci-Fi",
+    meta: "2h 00m · 2026",
+    href: "/title/tomorrows-static",
+  },
 ];
 
 function Row({ eyebrow, items }: { eyebrow: string; items: PosterItem[] }) {
