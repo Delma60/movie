@@ -1,6 +1,16 @@
 "use client";
 
 import Link from "next/link";
+import {
+  ArrowLeft,
+  BarChart3,
+  Film,
+  LayoutDashboard,
+  MonitorPlay,
+  Settings,
+  UsersRound,
+  type LucideIcon,
+} from "lucide-react";
 import { usePathname } from "next/navigation";
 import { hasRole, type UserRole } from "@/lib/roles";
 
@@ -13,17 +23,17 @@ interface AdminSidebarProps {
 interface NavItem {
   label: string;
   href: string;
-  icon: string;
+  icon: LucideIcon;
   minRole?: UserRole;
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: "Dashboard", href: "/admin/dashboard", icon: "▤" },
-  { label: "Titles", href: "/admin/titles", icon: "▶" },
-  { label: "Episodes", href: "/admin/episodes", icon: "▥" },
-  { label: "Users", href: "/admin/users", icon: "◔", minRole: "admin" },
-  { label: "Analytics", href: "/admin/analytics", icon: "◱" },
-  { label: "Settings", href: "/admin/settings", icon: "⚙" },
+  { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
+  { label: "Titles", href: "/admin/titles", icon: Film },
+  { label: "Episodes", href: "/admin/episodes", icon: MonitorPlay },
+  { label: "Users", href: "/admin/users", icon: UsersRound, minRole: "admin" },
+  { label: "Analytics", href: "/admin/analytics", icon: BarChart3 },
+  { label: "Settings", href: "/admin/settings", icon: Settings },
 ];
 
 export function AdminSidebar({ role, name, email }: AdminSidebarProps) {
@@ -58,9 +68,11 @@ export function AdminSidebar({ role, name, email }: AdminSidebarProps) {
                 className={`admin-nav-link${active ? " active" : ""}`}
                 aria-current={active ? "page" : undefined}
               >
-                <span className="admin-nav-icon" aria-hidden="true">
-                  {item.icon}
-                </span>
+                <item.icon
+                  className="admin-nav-icon"
+                  aria-hidden="true"
+                  size={18}
+                />
                 {item.label}
               </Link>
             );
@@ -70,9 +82,7 @@ export function AdminSidebar({ role, name, email }: AdminSidebarProps) {
 
       <div className="admin-sidebar-bottom">
         <Link href="/" className="admin-nav-link admin-nav-exit">
-          <span className="admin-nav-icon" aria-hidden="true">
-            ←
-          </span>
+          <ArrowLeft className="admin-nav-icon" aria-hidden="true" size={18} />
           Back to site
         </Link>
         <div className="admin-user">
