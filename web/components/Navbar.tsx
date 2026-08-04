@@ -29,6 +29,9 @@ export function Navbar({ user }: NavbarProps) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const isAdminRoute = pathname === "/admin" || pathname?.startsWith("/admin/");
+  if (isAdminRoute) return null;
+
   const label = user?.name?.trim() || user?.email?.trim() || "";
   const initial = label ? label[0].toUpperCase() : "?";
 
