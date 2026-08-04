@@ -32,20 +32,25 @@ export function AdminSidebar({ role, name, email }: AdminSidebarProps) {
   const initial = label ? label[0].toUpperCase() : "?";
 
   const items = NAV_ITEMS.filter(
-    (item) => !item.minRole || hasRole(role, item.minRole)
+    (item) => !item.minRole || hasRole(role, item.minRole),
   );
 
   return (
     <aside className="admin-sidebar">
       <div className="admin-sidebar-top">
-        <Link href="/admin/dashboard" className="admin-logo" aria-label="Velvet admin home">
+        <Link
+          href="/admin/dashboard"
+          className="admin-logo"
+          aria-label="Velvet admin home"
+        >
           VEL<span>VET</span>
           <span className="admin-logo-tag">Admin</span>
         </Link>
 
         <nav className="admin-nav" aria-label="Admin navigation">
           {items.map((item) => {
-            const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+            const active =
+              pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
               <Link
                 key={item.href}
