@@ -11,18 +11,18 @@ export default async function AdminUsersPage() {
   const rows = await listUsers();
 
   return (
-    <main className="vp-content">
+    <main className="admin-page">
       <h1>Users</h1>
       <p>
         Manage account roles. Promoting someone to editor or admin gives them
         access to this admin panel.
       </p>
-      <table>
+      <table className="admin-table">
         <thead>
           <tr>
-            <th style={{ textAlign: "left" }}>Name</th>
-            <th style={{ textAlign: "left" }}>Email</th>
-            <th style={{ textAlign: "left" }}>Role</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
           </tr>
         </thead>
         <tbody>

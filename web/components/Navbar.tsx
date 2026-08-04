@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { Bell, LogOut, Search } from "lucide-react";
 import type { SessionUser } from "@/lib/session";
 
 const NAV_LINKS = [
@@ -57,13 +58,13 @@ export function Navbar({ user }: NavbarProps) {
       </ul>
       <div className="vp-nav-right">
         <Link href="/search" className="vp-icon-btn" aria-label="Search">
-          ⌕
+          <Search size={18} strokeWidth={2} />
         </Link>
 
         {user ? (
           <>
             <button className="vp-icon-btn" aria-label="Notifications">
-              ◔
+              <Bell size={18} strokeWidth={2} />
             </button>
             <Link
               href="/account"
@@ -87,7 +88,7 @@ export function Navbar({ user }: NavbarProps) {
               className="vp-icon-btn"
               aria-label="Sign out"
             >
-              ⎋
+              <LogOut size={18} strokeWidth={2} />
             </a>
           </>
         ) : (
