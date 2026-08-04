@@ -936,6 +936,139 @@ a {
 }
 
 /* ==========================================================
+   ACCOUNT PAGE
+   ========================================================== */
+.vp-account-page {
+  margin: 0;
+}
+
+.vp-account-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 28px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  margin-bottom: 40px;
+}
+
+.vp-account-avatar {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--gold-dim));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+  color: #1a1310;
+}
+
+.vp-account-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.vp-account-name {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 22px;
+  margin: 0;
+}
+
+.vp-account-email {
+  font-size: 14px;
+  color: var(--text-dim);
+  margin: 0;
+}
+
+.vp-account-section {
+  margin-bottom: 40px;
+}
+
+.vp-account-sub-card {
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.vp-account-sub-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.vp-account-sub-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.vp-account-sub-value {
+  font-size: 15px;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.vp-status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.vp-status-active,
+.vp-status-trialing {
+  background: rgba(120, 170, 120, 0.15);
+  color: #9fd6a0;
+}
+
+.vp-status-past_due {
+  background: rgba(201, 168, 118, 0.15);
+  color: var(--gold);
+}
+
+.vp-status-canceled {
+  background: rgba(122, 38, 50, 0.15);
+  color: #e08a8a;
+}
+
+.vp-account-sub-empty {
+  align-items: flex-start;
+  color: var(--text-dim);
+  font-size: 14px;
+}
+
+.vp-account-actions {
+  display: flex;
+  gap: 14px;
+}
+
+@media (max-width: 480px) {
+  .vp-account-card {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+
+/* ==========================================================
    BROWSE PAGE
    ========================================================== */
 .vp-browse {

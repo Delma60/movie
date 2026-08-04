@@ -6,6 +6,7 @@ export interface PosterItem {
   meta: string;
   badge?: string;
   progress?: number;
+  href?: string;
 }
 
 export function PosterCard({
