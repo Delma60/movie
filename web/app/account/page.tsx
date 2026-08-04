@@ -6,7 +6,11 @@ import { getWatchHistory } from "@/lib/watch-history";
 import { getMyListTitles } from "@/lib/my-list";
 import { PosterCard } from "@/components/PosterCard";
 import { DeleteAccountButton } from "@/components/DeleteAccountButton";
-import { changePassword, signOutEverywhere, updateProfile } from "@/lib/actions/account";
+import {
+  changePassword,
+  signOutEverywhere,
+  updateProfile,
+} from "@/lib/actions/account";
 import { formatDuration } from "@/lib/titles";
 
 const STATUS_LABEL: Record<string, string> = {
@@ -20,7 +24,8 @@ const ERRORS: Record<string, string> = {
   invalid_profile: "Enter a name and email address.",
   email_taken: "Another account already uses that email.",
   wrong_password: "Your current password isn't right.",
-  invalid_password: "New password must be at least 8 characters and match the confirmation.",
+  invalid_password:
+    "New password must be at least 8 characters and match the confirmation.",
 };
 
 const SUCCESSES: Record<string, string> = {
@@ -40,10 +45,13 @@ const TOC = [
 
 function formatDate(
   d: Date | string | null,
-  opts?: Intl.DateTimeFormatOptions
+  opts?: Intl.DateTimeFormatOptions,
 ): string | null {
   if (!d) return null;
-  return new Date(d).toLocaleDateString("en-US", opts ?? { month: "long", day: "numeric", year: "numeric" });
+  return new Date(d).toLocaleDateString(
+    "en-US",
+    opts ?? { month: "long", day: "numeric", year: "numeric" },
+  );
 }
 
 function memberSerial(id: string): string {
@@ -60,8 +68,10 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
   if (!user) redirect("/login?returnTo=/account");
 
   const { error, success } = await searchParams;
-  const errorMessage = error ? ERRORS[error] ?? "Something went wrong." : null;
-  const successMessage = success ? SUCCESSES[success] ?? null : null;
+  const errorMessage = error
+    ? (ERRORS[error] ?? "Something went wrong.")
+    : null;
+  const successMessage = success ? (SUCCESSES[success] ?? null) : null;
 
   const [subscription, watchHistory, myList] = await Promise.all([
     getSubscriptionForUser(user.id),
@@ -85,18 +95,31 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
               )}
               <div className="vp-membercard-since">
                 <span>Member since</span>
-                <strong>{formatDate(user.createdAt, { month: "short", year: "numeric" })}</strong>
+                <strong>
+                  {formatDate(user.createdAt, {
+                    month: "short",
+                    year: "numeric",
+                  })}
+                </strong>
               </div>
             </div>
             <div className="vp-membercard-stub" aria-hidden="true">
-              <span className="vp-membercard-serial">{memberSerial(user.id)}</span>
+              <span className="vp-membercard-serial">
+                {memberSerial(user.id)}
+              </span>
             </div>
           </div>
 
           <nav className="vp-account-toc" aria-label="Account sections">
             {TOC.map((item, i) => (
-              <a key={item.id} href={`#${item.id}`} className="vp-account-toc-link">
-                <span className="vp-account-toc-index">{String(i + 1).padStart(2, "0")}</span>
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                className="vp-account-toc-link"
+              >
+                <span className="vp-account-toc-index">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
                 {item.label}
               </a>
             ))}
@@ -104,7 +127,11 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
         </aside>
 
         <div className="vp-account-main">
-          {errorMessage && <div className="vp-login-error vp-account-banner">{errorMessage}</div>}
+          {errorMessage && (
+            <div className="vp-login-error vp-account-banner">
+              {errorMessage}
+            </div>
+          )}
           {successMessage && (
             <div className="vp-login-error vp-account-banner vp-account-banner-success">
               {successMessage}
@@ -116,16 +143,32 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
               <span className="vp-row-eyebrow">01 — Profile</span>
               <span className="vp-row-rule" />
             </div>
-            <form action={updateProfile} className="vp-login-form vp-account-form">
+            <form
+              action={updateProfile}
+              className="vp-login-form vp-account-form"
+            >
               <label className="vp-field">
                 <span>Name</span>
-                <input type="text" name="displayName" defaultValue={user.displayName} required />
+                <input
+                  type="text"
+                  name="displayName"
+                  defaultValue={user.displayName}
+                  required
+                />
               </label>
               <label className="vp-field">
                 <span>Email</span>
-                <input type="email" name="email" defaultValue={user.email} required />
+                <input
+                  type="email"
+                  name="email"
+                  defaultValue={user.email}
+                  required
+                />
               </label>
-              <button type="submit" className="vp-btn vp-btn-primary vp-account-form-submit">
+              <button
+                type="submit"
+                className="vp-btn vp-btn-primary vp-account-form-submit"
+              >
                 Save Changes
               </button>
             </form>
@@ -136,23 +179,46 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
               <span className="vp-row-eyebrow">02 — Password</span>
               <span className="vp-row-rule" />
             </div>
-            <form action={changePassword} className="vp-login-form vp-account-form">
+            <form
+              action={changePassword}
+              className="vp-login-form vp-account-form"
+            >
               <label className="vp-field">
                 <span>Current Password</span>
-                <input type="password" name="currentPassword" autoComplete="current-password" />
+                <input
+                  type="password"
+                  name="currentPassword"
+                  autoComplete="current-password"
+                />
               </label>
               <label className="vp-field">
                 <span>New Password</span>
-                <input type="password" name="newPassword" autoComplete="new-password" minLength={8} required />
+                <input
+                  type="password"
+                  name="newPassword"
+                  autoComplete="new-password"
+                  minLength={8}
+                  required
+                />
               </label>
               <label className="vp-field">
                 <span>Confirm New Password</span>
-                <input type="password" name="confirmPassword" autoComplete="new-password" minLength={8} required />
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  autoComplete="new-password"
+                  minLength={8}
+                  required
+                />
               </label>
               <p className="vp-account-hint">
-                Signed up with Spurs and never set a password? Leave “Current Password” blank to set one now.
+                Signed up with Spurs and never set a password? Leave “Current
+                Password” blank to set one now.
               </p>
-              <button type="submit" className="vp-btn vp-btn-primary vp-account-form-submit">
+              <button
+                type="submit"
+                className="vp-btn vp-btn-primary vp-account-form-submit"
+              >
                 Update Password
               </button>
             </form>
@@ -168,18 +234,24 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
               <div className="vp-account-sub-card">
                 <div className="vp-account-sub-row">
                   <span className="vp-account-sub-label">Plan</span>
-                  <span className="vp-account-sub-value">{subscription.plan}</span>
+                  <span className="vp-account-sub-value">
+                    {subscription.plan}
+                  </span>
                 </div>
                 <div className="vp-account-sub-row">
                   <span className="vp-account-sub-label">Status</span>
-                  <span className={`vp-status-pill vp-status-${subscription.status}`}>
+                  <span
+                    className={`vp-status-pill vp-status-${subscription.status}`}
+                  >
                     {STATUS_LABEL[subscription.status] ?? subscription.status}
                   </span>
                 </div>
                 {subscription.currentPeriodEnd && (
                   <div className="vp-account-sub-row">
                     <span className="vp-account-sub-label">
-                      {subscription.status === "canceled" ? "Access until" : "Renews"}
+                      {subscription.status === "canceled"
+                        ? "Access until"
+                        : "Renews"}
                     </span>
                     <span className="vp-account-sub-value">
                       {formatDate(subscription.currentPeriodEnd)}
@@ -190,7 +262,11 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
             ) : (
               <div className="vp-account-sub-card vp-account-sub-empty">
                 <p>You don&apos;t have an active subscription yet.</p>
-                <button type="button" className="vp-btn vp-btn-primary" disabled>
+                <button
+                  type="button"
+                  className="vp-btn vp-btn-primary"
+                  disabled
+                >
                   Choose a Plan
                 </button>
               </div>
@@ -216,7 +292,9 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
                     meta={
                       t.type === "series"
                         ? "Series"
-                        : [formatDuration(t.durationMinutes), t.year].filter(Boolean).join(" · ")
+                        : [formatDuration(t.durationMinutes), t.year]
+                            .filter(Boolean)
+                            .join(" · ")
                     }
                   />
                 ))}
@@ -244,7 +322,9 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
                       meta={
                         t.type === "series"
                           ? "Series"
-                          : [formatDuration(t.durationMinutes), t.year].filter(Boolean).join(" · ")
+                          : [formatDuration(t.durationMinutes), t.year]
+                              .filter(Boolean)
+                              .join(" · ")
                       }
                       badge={t.isOriginal ? "Original" : undefined}
                     />
@@ -268,7 +348,8 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
               <div>
                 <p className="vp-account-danger-title">Sign out everywhere</p>
                 <p className="vp-account-danger-text">
-                  Ends every other signed-in session on all devices. This device stays signed in.
+                  Ends every other signed-in session on all devices. This device
+                  stays signed in.
                 </p>
               </div>
               <form action={signOutEverywhere}>
@@ -281,7 +362,8 @@ export default async function AccountPage({ searchParams }: AccountPageProps) {
               <div>
                 <p className="vp-account-danger-title">Delete account</p>
                 <p className="vp-account-danger-text">
-                  Permanently removes your profile, watch history, My List, and subscription record.
+                  Permanently removes your profile, watch history, My List, and
+                  subscription record.
                 </p>
               </div>
               <DeleteAccountButton />
