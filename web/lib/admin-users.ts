@@ -1,10 +1,13 @@
 import { db, users } from "@/lib/db";
 import { and, asc, count, eq, ilike, or } from "drizzle-orm";
 import type { UserRole } from "@/lib/roles";
+import { ADMIN_PAGE_SIZE } from "@/lib/admin-query";
 
 export interface AdminUserFilters {
   q?: string;
   role?: UserRole;
+  page?: number;
+  pageSize?: number;
 }
 
 export interface AdminUserRow {
@@ -15,7 +18,12 @@ export interface AdminUserRow {
   createdAt: Date;
 }
 
-export async function getAdminUsers(filters: AdminUserFilters): Promise<AdminUserRow[]> {
+export interface AdminUsersResult {
+  rows: AdminUserRow[];
+  total: number;
+}
+
+export async function getAdminUsers(filters: AdminUserFilters): Promise<AdminUsersResult> {
   const conditions = [];
 
   if (filters.q) {
@@ -24,17 +32,28 @@ export async function getAdminUsers(filters: AdminUserFilters): Promise<AdminUse
   }
   if (filters.role) conditions.push(eq(users.role, filters.role));
 
-  return db
-    .select({
-      id: users.id,
-      email: users.email,
-      displayName: users.displayName,
-      role: users.role,
-      createdAt: users.createdAt,
-    })
-    .from(users)
-    .where(conditions.length ? and(...conditions) : undefined)
-    .orderBy(asc(users.createdAt));
+  const where = conditions.length ? and(...conditions) : undefined;
+  const pageSize = filters.pageSize ?? ADMIN_PAGE_SIZE;
+  const page = Math.max(1, filters.page ?? 1);
+
+  const [rows, countRows] = await Promise.all([
+    db
+      .select({
+        id: users.id,
+        email: users.email,
+        displayName: users.displayName,
+        role: users.role,
+        createdAt: users.createdAt,
+      })
+      .from(users)
+      .where(where)
+      .orderBy(asc(users.createdAt))
+      .limit(pageSize)
+      .offset((page - 1) * pageSize),
+    db.select({ value: count() }).from(users).where(where),
+  ]);
+
+  return { rows, total: countRows[0].value };
 }
 
 export async function getAdminUserCounts(): Promise<{

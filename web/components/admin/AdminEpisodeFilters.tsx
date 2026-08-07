@@ -8,7 +8,10 @@ interface AdminEpisodeFiltersProps {
   resultCount: number;
 }
 
-export function AdminEpisodeFilters({ seriesOptions, resultCount }: AdminEpisodeFiltersProps) {
+export function AdminEpisodeFilters({
+  seriesOptions,
+  resultCount,
+}: AdminEpisodeFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -20,7 +23,9 @@ export function AdminEpisodeFilters({ seriesOptions, resultCount }: AdminEpisode
     const params = new URLSearchParams(searchParams.toString());
     if (value) params.set(key, value);
     else params.delete(key);
-    router.push(`/admin/episodes${params.toString() ? `?${params.toString()}` : ""}`);
+    router.push(
+      `/admin/episodes${params.toString() ? `?${params.toString()}` : ""}`,
+    );
   }
 
   function handleSearchSubmit(e: FormEvent) {

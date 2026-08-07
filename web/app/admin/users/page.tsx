@@ -1,12 +1,15 @@
 import { requireRole } from "@/lib/auth";
 import { listUsers } from "@/lib/actions/admin-users";
 import { getAdminUserCounts } from "@/lib/admin-users";
-import { UserRoleRow } from "@/components/admin/UserRoleRow";
-import { AdminUserFilters } from "@/components/admin/AdminUserFilters";
 import type { UserRole } from "@/lib/roles";
+import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
+import { AdminPagination } from "@/components/admin/AdminPagination";
+import { AdminTable } from "@/components/admin/AdminTable";
+import { UserRoleRow } from "@/components/admin/UserRoleRow";
+import { getAdminPaginationMeta } from "@/lib/admin-query";
 
 interface AdminUsersPageProps {
-  searchParams: Promise<{ q?: string; role?: string }>;
+  searchParams: Promise<{ q?: string; role?: string; page?: string }>;
 }
 
 const VALID_ROLES: UserRole[] = ["user", "editor", "admin"];
@@ -21,14 +24,17 @@ export default async function AdminUsersPage({
 
   const params = await searchParams;
   const q = params.q?.trim() || undefined;
+  const page = Number.parseInt(params.page ?? "1", 10);
   const role = VALID_ROLES.includes(params.role as UserRole)
     ? (params.role as UserRole)
     : undefined;
 
-  const [rows, counts] = await Promise.all([
-    listUsers({ q, role }),
+  const [result, counts] = await Promise.all([
+    listUsers({ q, role, page }),
     getAdminUserCounts(),
   ]);
+  const rows = result.rows;
+  const pagination = getAdminPaginationMeta(page, 20, result.total);
 
   return (
     <main className="admin-page admin-users-page">
@@ -44,38 +50,47 @@ export default async function AdminUsersPage({
         </div>
       </div>
 
-      <AdminUserFilters resultCount={rows.length} />
+      <AdminFilterBar
+        basePath="/admin/users"
+        resultCount={result.total}
+        searchPlaceholder="Search name or email…"
+        filters={[
+          {
+            key: "role",
+            label: "All roles",
+            value: role ?? "",
+            options: [
+              { value: "", label: "All roles" },
+              { value: "user", label: "User" },
+              { value: "editor", label: "Editor" },
+              { value: "admin", label: "Admin" },
+            ],
+          },
+        ]}
+        singularLabel="user"
+        pluralLabel="users"
+      />
 
-      {rows.length === 0 ? (
-        <div className="admin-panel admin-empty-block">
-          <p className="admin-empty">No users match those filters.</p>
-        </div>
-      ) : (
-        <div className="admin-panel admin-users-panel">
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Joined</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((u) => (
-                <UserRoleRow
-                  key={u.id}
-                  id={u.id}
-                  displayName={u.displayName}
-                  email={u.email}
-                  role={u.role}
-                  createdAt={u.createdAt}
-                />
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+      <AdminTable
+        columns={["Name", "Email", "Role", "Joined"]}
+        rows={rows.map((u) => (
+          <UserRoleRow
+            key={u.id}
+            id={u.id}
+            displayName={u.displayName}
+            email={u.email}
+            role={u.role}
+            createdAt={u.createdAt}
+          />
+        ))}
+        emptyMessage="No users match those filters."
+      />
+
+      <AdminPagination
+        basePath="/admin/users"
+        meta={pagination}
+        searchParams={new URLSearchParams(params as Record<string, string>)}
+      />
     </main>
   );
 }
