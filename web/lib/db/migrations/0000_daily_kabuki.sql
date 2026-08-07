@@ -1,4 +1,5 @@
 CREATE TYPE "public"."subscription_status" AS ENUM('active', 'past_due', 'canceled', 'trialing');--> statement-breakpoint
+CREATE TYPE "public"."ad_placement" AS ENUM('homepage', 'title_page', 'browse');--> statement-breakpoint
 CREATE TYPE "public"."title_status" AS ENUM('draft', 'published');--> statement-breakpoint
 CREATE TYPE "public"."title_type" AS ENUM('movie', 'series');--> statement-breakpoint
 CREATE TYPE "public"."user_role" AS ENUM('user', 'editor', 'admin');--> statement-breakpoint
@@ -35,6 +36,18 @@ CREATE TABLE "subscriptions" (
 	"plan" text NOT NULL,
 	"status" "subscription_status" DEFAULT 'trialing' NOT NULL,
 	"current_period_end" timestamp with time zone,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "ads" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"headline" text NOT NULL,
+	"description" text,
+	"placement" "ad_placement" DEFAULT 'homepage' NOT NULL,
+	"active" boolean DEFAULT true NOT NULL,
+	"title_id" uuid,
+	"cta_text" text NOT NULL,
+	"cta_url" text NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
@@ -89,6 +102,7 @@ ALTER TABLE "episodes" ADD CONSTRAINT "episodes_title_id_titles_id_fk" FOREIGN K
 ALTER TABLE "my_list" ADD CONSTRAINT "my_list_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "my_list" ADD CONSTRAINT "my_list_title_id_titles_id_fk" FOREIGN KEY ("title_id") REFERENCES "public"."titles"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "subscriptions" ADD CONSTRAINT "subscriptions_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "ads" ADD CONSTRAINT "ads_title_id_titles_id_fk" FOREIGN KEY ("title_id") REFERENCES "public"."titles"("id") ON DELETE set null ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "video_assets" ADD CONSTRAINT "video_assets_title_id_titles_id_fk" FOREIGN KEY ("title_id") REFERENCES "public"."titles"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "video_assets" ADD CONSTRAINT "video_assets_episode_id_episodes_id_fk" FOREIGN KEY ("episode_id") REFERENCES "public"."episodes"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "watch_progress" ADD CONSTRAINT "watch_progress_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -99,6 +113,9 @@ CREATE UNIQUE INDEX "episodes_title_season_ep_idx" ON "episodes" USING btree ("t
 CREATE UNIQUE INDEX "storage_buckets_project_name_idx" ON "vert_storage_buckets" USING btree ("project_id","name");--> statement-breakpoint
 CREATE INDEX "storage_buckets_project_idx" ON "vert_storage_buckets" USING btree ("project_id");--> statement-breakpoint
 CREATE INDEX "subscriptions_user_idx" ON "subscriptions" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "ads_placement_idx" ON "ads" USING btree ("placement");--> statement-breakpoint
+CREATE INDEX "ads_active_idx" ON "ads" USING btree ("active");--> statement-breakpoint
+CREATE INDEX "ads_title_idx" ON "ads" USING btree ("title_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "titles_slug_idx" ON "titles" USING btree ("slug");--> statement-breakpoint
 CREATE INDEX "titles_status_idx" ON "titles" USING btree ("status");--> statement-breakpoint
 CREATE UNIQUE INDEX "users_email_idx" ON "users" USING btree ("email");--> statement-breakpoint

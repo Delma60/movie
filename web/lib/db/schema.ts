@@ -29,6 +29,11 @@ export const subscriptionStatusEnum = pgEnum("subscription_status", [
   "canceled",
   "trialing",
 ]);
+export const adPlacementEnum = pgEnum("ad_placement", [
+  "homepage",
+  "title_page",
+  "browse",
+]);
 
 /* ==========================================================
    USERS
@@ -201,6 +206,26 @@ export const subscriptions = pgTable("subscriptions", {
   index("subscriptions_user_idx").on(t.userId),
 ]);
 
+export const ads = pgTable("ads", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  headline: text("headline").notNull(),
+  description: text("description"),
+  placement: adPlacementEnum("placement").notNull().default("homepage"),
+  active: boolean("active").notNull().default(true),
+  titleId: uuid("title_id").references(() => titles.id, {
+    onDelete: "set null",
+  }),
+  ctaText: text("cta_text").notNull(),
+  ctaUrl: text("cta_url").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+}, (t) => [
+  index("ads_placement_idx").on(t.placement),
+  index("ads_active_idx").on(t.active),
+  index("ads_title_idx").on(t.titleId),
+]);
+
 /* ==========================================================
    RELATIONS
    ========================================================== */
@@ -261,10 +286,18 @@ export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
   }),
 }));
 
+export const adsRelations = relations(ads, ({ one }) => ({
+  title: one(titles, {
+    fields: [ads.titleId],
+    references: [titles.id],
+  }),
+}));
+
 export type TitleType = (typeof titleTypeEnum.enumValues)[number];
 export type TitleStatus = (typeof titleStatusEnum.enumValues)[number];
 export type VideoStatus = (typeof videoStatusEnum.enumValues)[number];
 export type SubscriptionStatus = (typeof subscriptionStatusEnum.enumValues)[number];
+export type AdPlacement = (typeof adPlacementEnum.enumValues)[number];
 
 export type StorageBucket = typeof storageBuckets.$inferSelect;
 export type Title = typeof titles.$inferSelect;
