@@ -23,13 +23,13 @@ Admin (5) since admin depends on roles.
 
 - [ ] Replace the homepage mock data with real data from `titles`, `watchProgress`, and `myList` instead of hardcoded arrays.
 - [ ] Add watch progress persistence: write progress from the player and read it back for Continue Watching.
-- [ ] Add "My List" add support; the current UI only supports remove.
-- [ ] Build `/account` into a real account page with profile fields and subscription info.
+- [x] Add "My List" add support; the current UI only supports remove.
+- [x] Build `/account` into a real account page with profile fields and subscription info.
 
 ### Smaller / lower priority, can defer into or alongside Admin work
 
-- [ ] Add poster/backdrop upload/storage wiring and a corresponding admin upload flow.
-- [ ] Add a `.env.example` for the web app with the expected DB, storage, auth, and provider environment variables — now also needs `AUTH_SESSION_SECRET` and `ADMIN_BOOTSTRAP_EMAILS` documented (both already required by code, just not written down anywhere).
+- [x] Add poster/backdrop upload/storage wiring and a corresponding admin upload flow.
+- [x] Add a `.env.example` for the web app with the expected DB, storage, auth, and provider environment variables — now also needs `AUTH_SESSION_SECRET` and `ADMIN_BOOTSTRAP_EMAILS` documented (both already required by code, just not written down anywhere).
 - [ ] Decide the route-group structure for public vs. admin routes.
 
 ### Suggested order
@@ -69,7 +69,7 @@ Admin (5) since admin depends on roles.
 - [x] Role field (`user`, `editor`, `admin`) on the user record — now actually enforced, not just present in the schema.
 - [x] Route protection: `proxy.ts` middleware blocks `/admin/*` for anyone without `editor`/`admin` role.
 - [x] Separate admin login screen (or same login, redirect by role) — decided: same login/signup screens for everyone, no role-based auto-redirect after login. `/admin` is reached by typing/linking the URL and is gated by role, not by a separate login flow.
-- [ ] Audit log table: who changed what content, when (useful once more than one admin exists). Role changes currently aren't logged anywhere beyond the DB row itself — worth adding before this ships to more than a couple of trusted admins.
+- [x] Audit log table: who changed what content, when (useful once more than one admin exists). Role changes currently aren't logged anywhere beyond the DB row itself — worth adding before this ships to more than a couple of trusted admins.
 
 ## 4. Public web app — pages
 
@@ -99,7 +99,7 @@ Admin (5) since admin depends on roles.
 
 ## 7. Admin panel — content management (core)
 
-- [ ] Titles list: table view, search/filter, status (draft/published) toggle
+- [x] Titles list: table view, search/filter, status (draft/published) toggle
 - [ ] Create/edit title form: metadata fields, poster upload, backdrop upload, trailer URL
 - [ ] Episode management for series: add/reorder/edit episodes under a title
 - [ ] Video upload/attach flow: upload to storage, trigger transcoding if using Mux/Bunny, show processing status
@@ -110,7 +110,7 @@ Admin (5) since admin depends on roles.
 
 - [x] Users list: `/admin/users`, admin-only
 - [x] User detail: role changes via a dropdown per row (lib/actions/admin-users.ts). No watch-history view, ban/disable, or search/filter yet.
-- [ ] Subscription status view (if billing is in scope) — plan, renewal date, payment issues
+- [x] Subscription status view (if billing is in scope) — plan, renewal date, payment issues
 
 ## 9. Admin panel — analytics
 

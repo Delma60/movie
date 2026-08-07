@@ -21,6 +21,9 @@ try {
   await sql`DO $$ BEGIN
     CREATE TYPE "public"."video_status" AS ENUM('processing', 'ready', 'failed');
   EXCEPTION WHEN duplicate_object THEN null; END $$`;
+  await sql`DO $$ BEGIN
+    CREATE TYPE "public"."ad_placement" AS ENUM('homepage', 'title_page', 'browse');
+  EXCEPTION WHEN duplicate_object THEN null; END $$`;
 
   console.log("Creating tables...");
 
@@ -108,6 +111,44 @@ try {
     "created_at" timestamp with time zone DEFAULT now() NOT NULL
   )`;
   await sql`CREATE INDEX IF NOT EXISTS "subscriptions_user_idx" ON "subscriptions" USING btree ("user_id")`;
+
+  await sql`CREATE TABLE IF NOT EXISTS "ads" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+    "headline" text NOT NULL,
+    "description" text,
+    "placement" "ad_placement" DEFAULT 'homepage' NOT NULL,
+    "active" boolean DEFAULT true NOT NULL,
+    "title_id" uuid REFERENCES "titles"("id") ON DELETE SET NULL,
+    "cta_text" text NOT NULL,
+    "cta_url" text NOT NULL,
+    "created_at" timestamp with time zone DEFAULT now() NOT NULL
+  )`;
+  await sql`CREATE INDEX IF NOT EXISTS "ads_placement_idx" ON "ads" USING btree ("placement")`;
+  await sql`CREATE INDEX IF NOT EXISTS "ads_active_idx" ON "ads" USING btree ("active")`;
+  await sql`CREATE INDEX IF NOT EXISTS "ads_title_idx" ON "ads" USING btree ("title_id")`;
+
+  await sql`CREATE TABLE IF NOT EXISTS "audit_logs" (
+    "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+    "actor_id" uuid REFERENCES "users"("id") ON DELETE SET NULL,
+    "actor_name" text NOT NULL,
+    "actor_email" text NOT NULL,
+    "action" text NOT NULL,
+    "target_type" text NOT NULL,
+    "target_id" uuid,
+    "target_label" text,
+    "metadata" jsonb,
+    "created_at" timestamp with time zone DEFAULT now() NOT NULL
+  )`;
+  // Ensure columns exist if the table was created in a prior run without them.
+  await sql`ALTER TABLE "audit_logs" ADD COLUMN IF NOT EXISTS "target_type" text NOT NULL DEFAULT ''`;
+  await sql`ALTER TABLE "audit_logs" ALTER COLUMN "target_type" DROP DEFAULT`;
+  await sql`ALTER TABLE "audit_logs" ADD COLUMN IF NOT EXISTS "target_id" uuid`;
+  await sql`ALTER TABLE "audit_logs" ADD COLUMN IF NOT EXISTS "target_label" text`;
+  await sql`ALTER TABLE "audit_logs" ADD COLUMN IF NOT EXISTS "metadata" jsonb`;
+
+  await sql`CREATE INDEX IF NOT EXISTS "audit_logs_created_idx" ON "audit_logs" USING btree ("created_at")`;
+  await sql`CREATE INDEX IF NOT EXISTS "audit_logs_actor_idx" ON "audit_logs" USING btree ("actor_id")`;
+  await sql`CREATE INDEX IF NOT EXISTS "audit_logs_target_idx" ON "audit_logs" USING btree ("target_type","target_id")`;
 
   await sql`CREATE TABLE IF NOT EXISTS "vert_storage_buckets" (
     "id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,

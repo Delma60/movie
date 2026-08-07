@@ -6,11 +6,13 @@ const sql = postgres(process.env.DATABASE_URL, { ssl: "require", max: 1, prepare
 
 try {
   console.log("Dropping existing tables...");
+  await sql`DROP TABLE IF EXISTS "audit_logs" CASCADE`;
   await sql`DROP TABLE IF EXISTS "watch_progress" CASCADE`;
   await sql`DROP TABLE IF EXISTS "my_list" CASCADE`;
   await sql`DROP TABLE IF EXISTS "subscriptions" CASCADE`;
   await sql`DROP TABLE IF EXISTS "video_assets" CASCADE`;
   await sql`DROP TABLE IF EXISTS "episodes" CASCADE`;
+  await sql`DROP TABLE IF EXISTS "ads" CASCADE`;
   await sql`DROP TABLE IF EXISTS "titles" CASCADE`;
   await sql`DROP TABLE IF EXISTS "users" CASCADE`;
   await sql`DROP TABLE IF EXISTS "vert_storage_buckets" CASCADE`;
@@ -19,6 +21,7 @@ try {
   await sql`DROP TYPE IF EXISTS "title_type" CASCADE`;
   await sql`DROP TYPE IF EXISTS "user_role" CASCADE`;
   await sql`DROP TYPE IF EXISTS "video_status" CASCADE`;
+  await sql`DROP TYPE IF EXISTS "ad_placement" CASCADE`;
   console.log("Done — database is clean.");
 } finally {
   await sql.end();

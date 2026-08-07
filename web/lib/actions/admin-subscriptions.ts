@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { and, eq } from "drizzle-orm";
 import { db, subscriptions, users } from "@/lib/db";
+import { logAdminAction } from "@/lib/audit";
 import { getSession } from "@/lib/auth";
 import { hasRole } from "@/lib/roles";
 import type { SubscriptionStatus } from "@/lib/db/schema";
@@ -20,7 +21,7 @@ async function requireAdminActor() {
   if (!session?.email) throw new Error("Not signed in.");
 
   const [actor] = await db
-    .select({ id: users.id, role: users.role })
+    .select({ id: users.id, role: users.role, displayName: users.displayName, email: users.email })
     .from(users)
     .where(eq(users.email, session.email))
     .limit(1);
@@ -36,22 +37,30 @@ export async function updateSubscriptionStatus(
   subscriptionId: string,
   status: SubscriptionStatus,
 ): Promise<void> {
-  await requireAdminActor();
+  const actor = await requireAdminActor();
 
   if (!VALID_STATUSES.includes(status)) {
     throw new Error("Invalid subscription status.");
   }
 
-  await db
-    .update(subscriptions)
-    .set({ status })
-    .where(eq(subscriptions.id, subscriptionId));
+  const [before] = await db.select({ status: subscriptions.status, plan: subscriptions.plan }).from(subscriptions).where(eq(subscriptions.id, subscriptionId)).limit(1);
+
+  await db.update(subscriptions).set({ status }).where(eq(subscriptions.id, subscriptionId));
+
+  await logAdminAction({
+    actor: { id: actor.id, name: actor.displayName, email: actor.email },
+    action: "subscription.status_changed",
+    targetType: "subscription",
+    targetId: subscriptionId,
+    targetLabel: before?.plan ?? null,
+    metadata: { from: before?.status ?? null, to: status },
+  });
 
   revalidatePath("/admin/subscriptions");
 }
 
 export async function createSubscription(formData: FormData): Promise<void> {
-  await requireAdminActor();
+  const actor = await requireAdminActor();
 
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const plan = String(formData.get("plan") ?? "").trim();
@@ -91,6 +100,21 @@ export async function createSubscription(formData: FormData): Promise<void> {
     plan,
     status,
     currentPeriodEnd,
+  });
+  const [created] = await db.insert(subscriptions).values({
+    userId: user.id,
+    plan,
+    status,
+    currentPeriodEnd,
+  }).returning({ id: subscriptions.id });
+
+  await logAdminAction({
+    actor: { id: actor.id, name: actor.displayName, email: actor.email },
+    action: "subscription.created",
+    targetType: "subscription",
+    targetId: created.id,
+    targetLabel: email,
+    metadata: { plan, status },
   });
 
   revalidatePath("/admin/subscriptions");

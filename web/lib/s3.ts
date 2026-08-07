@@ -62,6 +62,28 @@ export async function putObject(
   );
 }
 
+export function getPublicObjectUrl(projectId: string, bucket: string, name: string): string {
+  const publicEndpoint = process.env.MINIO_PUBLIC_ENDPOINT || process.env.MINIO_ENDPOINT;
+  if (!publicEndpoint) {
+    throw new Error(
+      "[velvet] MINIO_PUBLIC_ENDPOINT or MINIO_ENDPOINT is required to build public object URLs.",
+    );
+  }
+  const baseUrl = publicEndpoint.replace(/\/+$/, "");
+  return `${baseUrl}/${BUCKET}/${encodeURIComponent(projectId)}/${encodeURIComponent(bucket)}/${encodeURIComponent(name)}`;
+}
+
+export async function uploadObject(
+  projectId: string,
+  bucket: string,
+  name: string,
+  file: File,
+): Promise<string> {
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  await putObject(projectId, bucket, name, bytes, file.type || "application/octet-stream");
+  return getPublicObjectUrl(projectId, bucket, name);
+}
+
 export async function removeObject(projectId: string, bucket: string, name: string): Promise<void> {
   await s3.send(new DeleteObjectCommand({ Bucket: BUCKET, Key: objectKey(projectId, bucket, name) }));
 }

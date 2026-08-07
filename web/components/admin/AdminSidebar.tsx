@@ -5,6 +5,7 @@ import { useState } from "react";
 import {
   ArrowLeft,
   BarChart3,
+  History,
   ChevronDown,
   CreditCard,
   Film,
@@ -61,6 +62,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Ads", href: "/admin/ads", icon: Megaphone, minRole: "admin" },
   { label: "Users", href: "/admin/users", icon: UsersRound, minRole: "admin" },
   { label: "Analytics", href: "/admin/analytics", icon: BarChart3 },
+  { label: "Audit Log", href: "/admin/audit-log", icon: History, minRole: "admin" },
   {
     label: "Settings",
     href: "/admin/settings",

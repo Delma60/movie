@@ -5,6 +5,7 @@ import {
   integer,
   boolean,
   timestamp,
+  jsonb,
   pgEnum,
   primaryKey,
   index,
@@ -227,6 +228,26 @@ export const ads = pgTable("ads", {
 ]);
 
 /* ==========================================================
+   AUDIT LOG  (admin actions: who changed what, when)
+   ========================================================== */
+export const auditLogs = pgTable("audit_logs", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  actorId: uuid("actor_id").references(() => users.id, { onDelete: "set null" }),
+  actorName: text("actor_name").notNull(),
+  actorEmail: text("actor_email").notNull(),
+  action: text("action").notNull(),
+  targetType: text("target_type").notNull(),
+  targetId: uuid("target_id"),
+  targetLabel: text("target_label"),
+  metadata: jsonb("metadata").$type<Record<string, unknown>>(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+}, (t) => [
+  index("audit_logs_created_idx").on(t.createdAt),
+  index("audit_logs_actor_idx").on(t.actorId),
+  index("audit_logs_target_idx").on(t.targetType, t.targetId),
+]);
+
+/* ==========================================================
    RELATIONS
    ========================================================== */
 export const usersRelations = relations(users, ({ many }) => ({
@@ -304,3 +325,8 @@ export type Title = typeof titles.$inferSelect;
 export type Episode = typeof episodes.$inferSelect;
 export type VideoAsset = typeof videoAssets.$inferSelect;
 export type Subscription = typeof subscriptions.$inferSelect;
+export const auditLogsRelations = relations(auditLogs, ({ one }) => ({
+  actor: one(users, { fields: [auditLogs.actorId], references: [users.id] }),
+}));
+
+export type AuditLog = typeof auditLogs.$inferSelect;

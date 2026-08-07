@@ -40,7 +40,7 @@ export default async function AdminNewTitlePage({
 
       {message && <div className="admin-form-error">{message}</div>}
 
-      <form action={createTitle} className="admin-form admin-panel">
+      <form action={createTitle} className="admin-form admin-panel" encType="multipart/form-data">
         <div className="admin-field">
           <label htmlFor="title">Title</label>
           <input id="title" name="title" type="text" required autoFocus />
@@ -122,6 +122,23 @@ export default async function AdminNewTitlePage({
             rows={4}
             placeholder="A short synopsis for the title page."
           />
+        </div>
+
+        <div className="admin-field-row">
+          <div className="admin-field">
+            <label htmlFor="posterFile">Poster upload</label>
+            <input id="posterFile" name="posterFile" type="file" accept="image/*" />
+            <p className="admin-field-help">
+              Upload a poster image, or provide a public URL below.
+            </p>
+          </div>
+          <div className="admin-field">
+            <label htmlFor="backdropFile">Backdrop upload</label>
+            <input id="backdropFile" name="backdropFile" type="file" accept="image/*" />
+            <p className="admin-field-help">
+              Upload a backdrop image, or provide a public URL below.
+            </p>
+          </div>
         </div>
 
         <div className="admin-field-row">

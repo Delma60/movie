@@ -3,10 +3,13 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
+import { extname } from "path";
 import { db, titles, users } from "@/lib/db";
+import { logAdminAction } from "@/lib/audit";
 import { getSession } from "@/lib/auth";
 import { hasRole } from "@/lib/roles";
 import { slugify } from "@/lib/slug";
+import { uploadObject } from "@/lib/s3";
 import type { TitleStatus, TitleType } from "@/lib/db/schema";
 
 const VALID_TYPES: TitleType[] = ["movie", "series"];
@@ -20,7 +23,7 @@ async function requireEditorActor() {
   if (!session?.email) throw new Error("Not signed in.");
 
   const [actor] = await db
-    .select({ id: users.id, role: users.role })
+    .select({ id: users.id, role: users.role, displayName: users.displayName, email: users.email })
     .from(users)
     .where(eq(users.email, session.email))
     .limit(1);
@@ -33,19 +36,34 @@ async function requireEditorActor() {
 }
 
 export async function toggleTitleStatus(titleId: string, nextStatus: TitleStatus): Promise<void> {
-  await requireEditorActor();
+  const actor = await requireEditorActor();
+
+  const [before] = await db
+    .select({ title: titles.title, status: titles.status })
+    .from(titles)
+    .where(eq(titles.id, titleId))
+    .limit(1);
 
   await db
     .update(titles)
     .set({ status: nextStatus, updatedAt: new Date() })
     .where(eq(titles.id, titleId));
 
+  await logAdminAction({
+    actor: { id: actor.id, name: actor.displayName, email: actor.email },
+    action: "title.status_changed",
+    targetType: "title",
+    targetId: titleId,
+    targetLabel: before?.title ?? null,
+    metadata: { from: before?.status ?? null, to: nextStatus },
+  });
+
   revalidatePath("/admin/titles");
   revalidatePath("/browse");
 }
 
 export async function createTitle(formData: FormData): Promise<void> {
-  await requireEditorActor();
+  const actor = await requireEditorActor();
 
   const title = String(formData.get("title") ?? "").trim();
   const genre = String(formData.get("genre") ?? "").trim();
@@ -53,10 +71,12 @@ export async function createTitle(formData: FormData): Promise<void> {
   const status = String(formData.get("status") ?? "draft") as TitleStatus;
   const synopsis = String(formData.get("synopsis") ?? "").trim() || null;
   const rating = String(formData.get("rating") ?? "").trim() || null;
-  const posterUrl = String(formData.get("posterUrl") ?? "").trim() || null;
-  const backdropUrl = String(formData.get("backdropUrl") ?? "").trim() || null;
+  let posterUrl = String(formData.get("posterUrl") ?? "").trim() || null;
+  let backdropUrl = String(formData.get("backdropUrl") ?? "").trim() || null;
   const trailerUrl = String(formData.get("trailerUrl") ?? "").trim() || null;
   const isOriginal = formData.get("isOriginal") === "on";
+  const posterFile = formData.get("posterFile");
+  const backdropFile = formData.get("backdropFile");
   const slugInput = String(formData.get("slug") ?? "").trim();
   const yearRaw = String(formData.get("year") ?? "").trim();
   const durationRaw = String(formData.get("durationMinutes") ?? "").trim();
@@ -101,6 +121,33 @@ export async function createTitle(formData: FormData): Promise<void> {
     }
   }
 
+  const storageProjectId = process.env.STORAGE_PROJECT_ID ?? "movie";
+  const storageBucket = process.env.STORAGE_LOGICAL_BUCKET ?? "titles";
+
+  function isUpload(value: unknown): value is File {
+    return (
+      typeof value === "object" &&
+      value !== null &&
+      "arrayBuffer" in value &&
+      typeof (value as any).arrayBuffer === "function" &&
+      typeof (value as any).name === "string"
+    );
+  }
+
+  async function maybeUploadFile(value: unknown, suffix: string): Promise<string | null> {
+    if (!isUpload(value)) return null;
+    const file = value as File;
+    if (file.size === 0) return null;
+    const extension = extname(file.name) || ".jpg";
+    const name = `${slug}-${suffix}${extension}`;
+    return await uploadObject(storageProjectId, storageBucket, name, file);
+  }
+
+  const uploadedPosterUrl = await maybeUploadFile(posterFile, "poster");
+  const uploadedBackdropUrl = await maybeUploadFile(backdropFile, "backdrop");
+  posterUrl = uploadedPosterUrl ?? posterUrl;
+  backdropUrl = uploadedBackdropUrl ?? backdropUrl;
+
   const [created] = await db
     .insert(titles)
     .values({
@@ -119,6 +166,15 @@ export async function createTitle(formData: FormData): Promise<void> {
       status,
     })
     .returning({ id: titles.id });
+
+  await logAdminAction({
+    actor: { id: actor.id, name: actor.displayName, email: actor.email },
+    action: "title.created",
+    targetType: "title",
+    targetId: created.id,
+    targetLabel: title,
+    metadata: { type, status, genre },
+  });
 
   revalidatePath("/admin/titles");
   revalidatePath("/browse");
