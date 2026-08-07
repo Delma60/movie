@@ -90,7 +90,9 @@ export default async function AdminEpisodesPage({
         </Link>
       </div>
 
-      {params.video && <div className="admin-form-success">Video attached.</div>}
+      {params.video && (
+        <div className="admin-form-success">Video attached.</div>
+      )}
 
       <AdminFilterBar
         basePath="/admin/episodes"
@@ -126,7 +128,16 @@ export default async function AdminEpisodesPage({
       />
 
       <AdminTable
-        columns={["Series", "Episode", "Duration", "Video", "Added", "", "", ""]}
+        columns={[
+          "Series",
+          "Episode",
+          "Duration",
+          "Video",
+          "Added",
+          "",
+          "",
+          "",
+        ]}
         rows={rows.map((e) => (
           <tr key={e.id}>
             <td>

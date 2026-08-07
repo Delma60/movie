@@ -126,7 +126,9 @@ export default async function AdminTitlesPage({
           <tr key={t.id}>
             <td>
               <span className="admin-table-primary">{t.title}</span>
-              {t.isOriginal && <span className="admin-table-sub">Original</span>}
+              {t.isOriginal && (
+                <span className="admin-table-sub">Original</span>
+              )}
             </td>
             <td className="admin-table-dim">
               {t.type === "series" ? "Series" : "Movie"}

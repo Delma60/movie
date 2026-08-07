@@ -1,8 +1,14 @@
 // web/app/admin/episodes/new/page.tsx
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { createEpisode, attachEpisodeVideo } from "@/lib/actions/admin-episodes";
-import { getEpisodeOptions, getSeriesTitlesForFilter } from "@/lib/admin-episodes";
+import {
+  createEpisode,
+  attachEpisodeVideo,
+} from "@/lib/actions/admin-episodes";
+import {
+  getEpisodeOptions,
+  getSeriesTitlesForFilter,
+} from "@/lib/admin-episodes";
 
 const ERRORS: Record<string, string> = {
   missing_fields: "Series and episode title are required.",
@@ -15,7 +21,11 @@ const ERRORS: Record<string, string> = {
 };
 
 interface AdminNewEpisodePageProps {
-  searchParams: Promise<{ error?: string; titleId?: string; episodeId?: string }>;
+  searchParams: Promise<{
+    error?: string;
+    titleId?: string;
+    episodeId?: string;
+  }>;
 }
 
 export default async function AdminNewEpisodePage({
@@ -142,11 +152,21 @@ export default async function AdminNewEpisodePage({
         <p className="admin-field-help">
           Upload a file directly to storage or paste a public video URL.
         </p>
-        <form action={attachEpisodeVideo} className="admin-form" encType="multipart/form-data">
+        <form
+          action={attachEpisodeVideo}
+          className="admin-form"
+          encType="multipart/form-data"
+        >
           <div className="admin-field">
             <label htmlFor="attachEpisodeId">Episode</label>
-            <select id="attachEpisodeId" name="episodeId" defaultValue={episodeId ?? ""}>
-              <option value="" disabled>Select an episode…</option>
+            <select
+              id="attachEpisodeId"
+              name="episodeId"
+              defaultValue={episodeId ?? ""}
+            >
+              <option value="" disabled>
+                Select an episode…
+              </option>
               {episodeOptions.map((episode) => (
                 <option key={episode.id} value={episode.id}>
                   {episode.label}
@@ -156,15 +176,31 @@ export default async function AdminNewEpisodePage({
           </div>
           <div className="admin-field">
             <label htmlFor="videoFile">Video file</label>
-            <input id="videoFile" name="videoFile" type="file" accept="video/*" />
+            <input
+              id="videoFile"
+              name="videoFile"
+              type="file"
+              accept="video/*"
+            />
           </div>
           <div className="admin-field">
             <label htmlFor="sourceUrl">Source URL</label>
-            <input id="sourceUrl" name="sourceUrl" type="text" placeholder="https://…" />
+            <input
+              id="sourceUrl"
+              name="sourceUrl"
+              type="text"
+              placeholder="https://…"
+            />
           </div>
           <div className="admin-field">
             <label htmlFor="durationSeconds">Duration (seconds)</label>
-            <input id="durationSeconds" name="durationSeconds" type="number" min={0} placeholder="2700" />
+            <input
+              id="durationSeconds"
+              name="durationSeconds"
+              type="number"
+              min={0}
+              placeholder="2700"
+            />
           </div>
           <button type="submit" className="admin-btn admin-btn-primary">
             Attach Video

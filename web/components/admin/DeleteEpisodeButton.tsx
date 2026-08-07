@@ -4,11 +4,18 @@ import { useTransition } from "react";
 import { Trash2 } from "lucide-react";
 import { deleteEpisode } from "@/lib/actions/admin-episodes";
 
-export function DeleteEpisodeButton({ id, name }: { id: string; name: string }) {
+export function DeleteEpisodeButton({
+  id,
+  name,
+}: {
+  id: string;
+  name: string;
+}) {
   const [isPending, startTransition] = useTransition();
 
   function handleDelete() {
-    if (!window.confirm(`Delete episode "${name}"? This can't be undone.`)) return;
+    if (!window.confirm(`Delete episode "${name}"? This can't be undone.`))
+      return;
     startTransition(() => {
       void deleteEpisode(id);
     });

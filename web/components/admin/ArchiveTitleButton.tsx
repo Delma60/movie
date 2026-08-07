@@ -10,7 +10,11 @@ interface ArchiveTitleButtonProps {
   status: TitleStatus;
 }
 
-export function ArchiveTitleButton({ id, title, status }: ArchiveTitleButtonProps) {
+export function ArchiveTitleButton({
+  id,
+  title,
+  status,
+}: ArchiveTitleButtonProps) {
   const [current, setCurrent] = useState(status);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -18,7 +22,12 @@ export function ArchiveTitleButton({ id, title, status }: ArchiveTitleButtonProp
   const isArchived = current === "archived";
 
   function handleClick() {
-    if (!isArchived && !window.confirm(`Archive "${title}"? It's hidden from Browse until restored.`)) {
+    if (
+      !isArchived &&
+      !window.confirm(
+        `Archive "${title}"? It's hidden from Browse until restored.`,
+      )
+    ) {
       return;
     }
     setError(null);
@@ -28,7 +37,9 @@ export function ArchiveTitleButton({ id, title, status }: ArchiveTitleButtonProp
         await toggleTitleStatus(id, next);
         setCurrent(next);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Couldn't update status.");
+        setError(
+          err instanceof Error ? err.message : "Couldn't update status.",
+        );
       }
     });
   }

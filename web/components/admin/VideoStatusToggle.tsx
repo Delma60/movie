@@ -24,14 +24,21 @@ export function VideoStatusToggle({ id, status }: VideoStatusToggleProps) {
         await updateVideoStatus(id, next);
         setCurrent(next);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Couldn't update status.");
+        setError(
+          err instanceof Error ? err.message : "Couldn't update status.",
+        );
       }
     });
   }
 
   return (
     <div className="admin-status-toggle-wrap">
-      <select value={current} onChange={handleChange} disabled={isPending} className="admin-status-select">
+      <select
+        value={current}
+        onChange={handleChange}
+        disabled={isPending}
+        className="admin-status-select"
+      >
         {STATUSES.map((value) => (
           <option key={value} value={value}>
             {value}

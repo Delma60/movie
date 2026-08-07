@@ -40,7 +40,9 @@ export default async function AdminEditEpisodePage({
     .where(eq(videoAssets.episodeId, id))
     .limit(1);
 
-  const updateEpisodeWithId = updateEpisode.bind(null, id);
+  async function updateEpisodeWithId(formData: FormData) {
+    await updateEpisode(id, formData);
+  }
 
   return (
     <main className="admin-page admin-form-page">

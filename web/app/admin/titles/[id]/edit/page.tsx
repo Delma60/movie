@@ -42,7 +42,9 @@ export default async function AdminEditTitlePage({
     .where(eq(videoAssets.titleId, id))
     .limit(1);
 
-  const updateTitleWithId = updateTitle.bind(null, id);
+  async function updateTitleWithId(formData: FormData) {
+    await updateTitle(id, formData);
+  }
 
   return (
     <main className="admin-page admin-form-page">
