@@ -9,7 +9,10 @@ import type { VideoStatus } from "@/lib/db/schema";
 import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { AdminPagination } from "@/components/admin/AdminPagination";
 import { AdminTable, AdminTableCellLink } from "@/components/admin/AdminTable";
+import { EpisodeReorderButtons } from "@/components/admin/EpisodeReorderButtons";
+import { DeleteEpisodeButton } from "@/components/admin/DeleteEpisodeButton";
 import { getAdminPaginationMeta } from "@/lib/admin-query";
+import { formatDurationSeconds } from "@/lib/video-duration";
 
 interface AdminEpisodesPageProps {
   searchParams: Promise<{
@@ -17,6 +20,7 @@ interface AdminEpisodesPageProps {
     titleId?: string;
     status?: string;
     page?: string;
+    video?: string;
   }>;
 }
 
@@ -86,6 +90,8 @@ export default async function AdminEpisodesPage({
         </Link>
       </div>
 
+      {params.video && <div className="admin-form-success">Video attached.</div>}
+
       <AdminFilterBar
         basePath="/admin/episodes"
         resultCount={result.total}
@@ -120,7 +126,7 @@ export default async function AdminEpisodesPage({
       />
 
       <AdminTable
-        columns={["Series", "Episode", "Duration", "Video", "Added", ""]}
+        columns={["Series", "Episode", "Duration", "Video", "Added", "", "", ""]}
         rows={rows.map((e) => (
           <tr key={e.id}>
             <td>
@@ -136,6 +142,11 @@ export default async function AdminEpisodesPage({
             </td>
             <td className="admin-table-dim">
               {formatDuration(e.durationMinutes)}
+              {e.videoDurationSeconds ? (
+                <span className="admin-table-sub">
+                  {formatDurationSeconds(e.videoDurationSeconds)}
+                </span>
+              ) : null}
             </td>
             <td>
               <span
@@ -146,12 +157,15 @@ export default async function AdminEpisodesPage({
             </td>
             <td className="admin-table-dim">{formatDate(e.createdAt)}</td>
             <td>
-              <AdminTableCellLink
-                href={`/watch/${e.titleSlug}?ep=${e.id}`}
-                external
-              >
-                Preview
+              <EpisodeReorderButtons id={e.id} />
+            </td>
+            <td>
+              <AdminTableCellLink href={`/admin/episodes/${e.id}/edit`}>
+                Edit
               </AdminTableCellLink>
+            </td>
+            <td>
+              <DeleteEpisodeButton id={e.id} name={e.name} />
             </td>
           </tr>
         ))}

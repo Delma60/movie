@@ -13,7 +13,7 @@ import { uploadObject } from "@/lib/s3";
 import type { TitleStatus, TitleType } from "@/lib/db/schema";
 
 const VALID_TYPES: TitleType[] = ["movie", "series"];
-const VALID_STATUSES: TitleStatus[] = ["draft", "published"];
+const VALID_STATUSES: TitleStatus[] = ["draft", "published", "archived"];
 
 /** Same live-role-check pattern as lib/actions/admin-users.ts — these mutate
  * catalog content, so they re-check the actor's role from the DB rather than
@@ -179,4 +179,119 @@ export async function createTitle(formData: FormData): Promise<void> {
   revalidatePath("/admin/titles");
   revalidatePath("/browse");
   redirect(`/admin/titles?created=${created.id}`);
+}
+
+export async function updateTitle(titleId: string, formData: FormData): Promise<void> {
+  const actor = await requireEditorActor();
+
+  const [existing] = await db.select().from(titles).where(eq(titles.id, titleId)).limit(1);
+  if (!existing) throw new Error("Title not found.");
+
+  const title = String(formData.get("title") ?? "").trim();
+  const genre = String(formData.get("genre") ?? "").trim();
+  const type = String(formData.get("type") ?? existing.type) as TitleType;
+  const status = String(formData.get("status") ?? existing.status) as TitleStatus;
+  const synopsis = String(formData.get("synopsis") ?? "").trim() || null;
+  const rating = String(formData.get("rating") ?? "").trim() || null;
+  let posterUrl = String(formData.get("posterUrl") ?? "").trim() || null;
+  let backdropUrl = String(formData.get("backdropUrl") ?? "").trim() || null;
+  const trailerUrl = String(formData.get("trailerUrl") ?? "").trim() || null;
+  const isOriginal = formData.get("isOriginal") === "on";
+  const posterFile = formData.get("posterFile");
+  const backdropFile = formData.get("backdropFile");
+  const slugInput = String(formData.get("slug") ?? "").trim();
+  const yearRaw = String(formData.get("year") ?? "").trim();
+  const durationRaw = String(formData.get("durationMinutes") ?? "").trim();
+
+  function fail(code: string): never {
+    redirect(`/admin/titles/${titleId}/edit?error=${code}`);
+  }
+
+  if (!title || !genre) fail("missing_fields");
+  if (!VALID_TYPES.includes(type)) fail("invalid_type");
+  if (!VALID_STATUSES.includes(status)) fail("invalid_status");
+
+  const slug = slugify(slugInput || title);
+  if (!slug) fail("invalid_slug");
+
+  const [existingSlug] = await db
+    .select({ id: titles.id })
+    .from(titles)
+    .where(eq(titles.slug, slug))
+    .limit(1);
+  if (existingSlug && existingSlug.id !== titleId) fail("slug_taken");
+
+  let year: number | null = null;
+  if (yearRaw) {
+    year = Number(yearRaw);
+    if (!Number.isFinite(year) || year < 1888 || year > 2100) fail("invalid_year");
+  }
+
+  let durationMinutes: number | null = existing.durationMinutes;
+  if (type === "movie" && durationRaw) {
+    durationMinutes = Number(durationRaw);
+    if (!Number.isFinite(durationMinutes) || durationMinutes <= 0) fail("invalid_duration");
+  }
+
+  const storageProjectId = process.env.STORAGE_PROJECT_ID ?? "movie";
+  const storageBucket = process.env.STORAGE_LOGICAL_BUCKET ?? "titles";
+
+  function isUpload(value: unknown): value is File {
+    return (
+      typeof value === "object" &&
+      value !== null &&
+      "arrayBuffer" in value &&
+      typeof (value as any).arrayBuffer === "function" &&
+      typeof (value as any).name === "string"
+    );
+  }
+
+  async function maybeUploadFile(value: unknown, suffix: string): Promise<string | null> {
+    if (!isUpload(value)) return null;
+    const file = value as File;
+    if (file.size === 0) return null;
+    const extension = extname(file.name) || ".jpg";
+    const name = `${slug}-${suffix}-${Date.now()}${extension}`;
+    return await uploadObject(storageProjectId, storageBucket, name, file);
+  }
+
+  const uploadedPosterUrl = await maybeUploadFile(posterFile, "poster");
+  const uploadedBackdropUrl = await maybeUploadFile(backdropFile, "backdrop");
+  posterUrl = uploadedPosterUrl ?? posterUrl ?? existing.posterUrl;
+  backdropUrl = uploadedBackdropUrl ?? backdropUrl ?? existing.backdropUrl;
+
+  await db
+    .update(titles)
+    .set({
+      slug,
+      title,
+      synopsis,
+      type,
+      genre,
+      year,
+      durationMinutes,
+      rating,
+      posterUrl,
+      backdropUrl,
+      trailerUrl,
+      isOriginal,
+      status,
+      updatedAt: new Date(),
+    })
+    .where(eq(titles.id, titleId));
+
+  await logAdminAction({
+    actor: { id: actor.id, name: actor.displayName, email: actor.email },
+    action: "title.updated",
+    targetType: "title",
+    targetId: titleId,
+    targetLabel: title,
+    metadata: { from: existing.status, to: status },
+  });
+
+  revalidatePath("/admin/titles");
+  revalidatePath(`/admin/titles/${titleId}/edit`);
+  revalidatePath("/browse");
+  revalidatePath(`/title/${slug}`);
+  redirect(`/admin/titles?updated=${titleId}`);
 }

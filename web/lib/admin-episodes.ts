@@ -1,5 +1,5 @@
 import { db, episodes, titles, videoAssets } from "@/lib/db";
-import { and, asc, count, eq, ilike, isNull, or } from "drizzle-orm";
+import { and, asc, count, eq, ilike, isNull, or, sql } from "drizzle-orm";
 import type { VideoStatus } from "@/lib/db/schema";
 import { ADMIN_PAGE_SIZE } from "@/lib/admin-query";
 
@@ -9,11 +9,13 @@ export interface AdminEpisodeRow {
   season: number;
   episodeNumber: number;
   durationMinutes: number | null;
+  synopsis: string | null;
   createdAt: Date;
   titleId: string;
   titleName: string;
   titleSlug: string;
   videoStatus: VideoStatus | null;
+  videoDurationSeconds: number | null;
 }
 
 export interface AdminEpisodeFilters {
@@ -27,6 +29,37 @@ export interface AdminEpisodeFilters {
 export interface AdminEpisodesResult {
   rows: AdminEpisodeRow[];
   total: number;
+}
+
+export interface AdminEpisodeDetail {
+  id: string;
+  name: string;
+  season: number;
+  episodeNumber: number;
+  durationMinutes: number | null;
+  synopsis: string | null;
+  titleName: string;
+  titleId: string;
+}
+
+export async function getAdminEpisodeById(id: string): Promise<AdminEpisodeDetail | null> {
+  const [row] = await db
+    .select({
+      id: episodes.id,
+      name: episodes.name,
+      season: episodes.season,
+      episodeNumber: episodes.episodeNumber,
+      durationMinutes: episodes.durationMinutes,
+      synopsis: episodes.synopsis,
+      titleName: titles.title,
+      titleId: titles.id,
+    })
+    .from(episodes)
+    .innerJoin(titles, eq(episodes.titleId, titles.id))
+    .where(eq(episodes.id, id))
+    .limit(1);
+
+  return row ?? null;
 }
 
 export async function getAdminEpisodes(filters: AdminEpisodeFilters): Promise<AdminEpisodesResult> {
@@ -57,6 +90,7 @@ export async function getAdminEpisodes(filters: AdminEpisodeFilters): Promise<Ad
         titleName: titles.title,
         titleSlug: titles.slug,
         videoStatus: videoAssets.status,
+        videoDurationSeconds: videoAssets.durationSeconds,
       })
       .from(episodes)
       .innerJoin(titles, eq(episodes.titleId, titles.id))
@@ -76,12 +110,46 @@ export async function getAdminEpisodes(filters: AdminEpisodeFilters): Promise<Ad
   return { rows, total: countRows[0].value };
 }
 
+export async function getAdminEpisodeById(id: string): Promise<AdminEpisodeRow | null> {
+  const [episode] = await db
+    .select({
+      id: episodes.id,
+      name: episodes.name,
+      season: episodes.season,
+      episodeNumber: episodes.episodeNumber,
+      durationMinutes: episodes.durationMinutes,
+      synopsis: episodes.synopsis,
+      createdAt: episodes.createdAt,
+      titleId: titles.id,
+      titleName: titles.title,
+      titleSlug: titles.slug,
+      videoStatus: videoAssets.status,
+      videoDurationSeconds: videoAssets.durationSeconds,
+    })
+    .from(episodes)
+    .innerJoin(titles, eq(episodes.titleId, titles.id))
+    .leftJoin(videoAssets, eq(videoAssets.episodeId, episodes.id))
+    .where(eq(episodes.id, id))
+    .limit(1);
+
+  return episode ?? null;
+}
+
 export async function getSeriesTitlesForFilter(): Promise<{ id: string; title: string }[]> {
   return db
     .select({ id: titles.id, title: titles.title })
     .from(titles)
     .where(eq(titles.type, "series"))
     .orderBy(asc(titles.title));
+}
+  return db
+    .select({
+      id: episodes.id,
+      label: sql<string>`concat(${titles.title}, ' · S', ${episodes.season}, ' · E', ${episodes.episodeNumber}, ' — ', ${episodes.name})`,
+    })
+    .from(episodes)
+    .innerJoin(titles, eq(episodes.titleId, titles.id))
+    .orderBy(asc(titles.title), asc(episodes.season), asc(episodes.episodeNumber));
 }
 
 export interface AdminEpisodeCounts {

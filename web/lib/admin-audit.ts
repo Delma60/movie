@@ -47,8 +47,14 @@ export async function getAdminAuditLog(filters: AdminAuditFilters = {}): Promise
 
 export const AUDIT_ACTIONS: AuditAction[] = [
   "title.created",
+  "title.updated",
   "title.status_changed",
   "episode.created",
+  "episode.updated",
+  "episode.deleted",
+  "episode.reordered",
+  "video.attached",
+  "video.status_changed",
   "ad.created",
   "ad.active_toggled",
   "subscription.created",
@@ -56,4 +62,4 @@ export const AUDIT_ACTIONS: AuditAction[] = [
   "user.role_changed",
 ];
 
-export const AUDIT_TARGET_TYPES = ["title", "episode", "ad", "subscription", "user"];
+export const AUDIT_TARGET_TYPES = ["title", "episode", "video", "ad", "subscription", "user"];

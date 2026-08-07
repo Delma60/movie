@@ -13,6 +13,9 @@ try {
     CREATE TYPE "public"."title_status" AS ENUM('draft', 'published');
   EXCEPTION WHEN duplicate_object THEN null; END $$`;
   await sql`DO $$ BEGIN
+    ALTER TYPE "public"."title_status" ADD VALUE IF NOT EXISTS 'archived';
+  END $$`;
+  await sql`DO $$ BEGIN
     CREATE TYPE "public"."title_type" AS ENUM('movie', 'series');
   EXCEPTION WHEN duplicate_object THEN null; END $$`;
   await sql`DO $$ BEGIN

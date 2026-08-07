@@ -2818,6 +2818,22 @@ a {
   background: rgba(245, 244, 242, 0.12);
 }
 
+.admin-btn-danger {
+  background: transparent;
+  color: #f0a9ae;
+  border-color: rgba(122, 38, 50, 0.5);
+}
+
+.admin-btn-danger:hover:not(:disabled),
+.admin-btn-danger:focus-visible:not(:disabled) {
+  background: rgba(122, 38, 50, 0.15);
+}
+
+.admin-pill-archived {
+  background: rgba(122, 38, 50, 0.16);
+  color: #e8a9af;
+}
+
 /* ==========================================================
    ADMIN — EPISODES TABLE
    ========================================================== */

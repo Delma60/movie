@@ -1,8 +1,8 @@
 // web/app/admin/episodes/new/page.tsx
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { createEpisode } from "@/lib/actions/admin-episodes";
-import { getSeriesTitlesForFilter } from "@/lib/admin-episodes";
+import { createEpisode, attachEpisodeVideo } from "@/lib/actions/admin-episodes";
+import { getEpisodeOptions, getSeriesTitlesForFilter } from "@/lib/admin-episodes";
 
 const ERRORS: Record<string, string> = {
   missing_fields: "Series and episode title are required.",
@@ -15,18 +15,21 @@ const ERRORS: Record<string, string> = {
 };
 
 interface AdminNewEpisodePageProps {
-  searchParams: Promise<{ error?: string; titleId?: string }>;
+  searchParams: Promise<{ error?: string; titleId?: string; episodeId?: string }>;
 }
 
 export default async function AdminNewEpisodePage({
   searchParams,
 }: AdminNewEpisodePageProps) {
-  const { error, titleId } = await searchParams;
+  const { error, titleId, episodeId } = await searchParams;
   const message = error
     ? (ERRORS[error] ?? "Couldn't create the episode.")
     : null;
 
-  const seriesOptions = await getSeriesTitlesForFilter();
+  const [seriesOptions, episodeOptions] = await Promise.all([
+    getSeriesTitlesForFilter(),
+    getEpisodeOptions(),
+  ]);
 
   return (
     <main className="admin-page admin-form-page">
@@ -133,6 +136,41 @@ export default async function AdminNewEpisodePage({
           </div>
         </form>
       )}
+
+      <div className="admin-panel admin-form">
+        <h2>Attach a video to an existing episode</h2>
+        <p className="admin-field-help">
+          Upload a file directly to storage or paste a public video URL.
+        </p>
+        <form action={attachEpisodeVideo} className="admin-form" encType="multipart/form-data">
+          <div className="admin-field">
+            <label htmlFor="attachEpisodeId">Episode</label>
+            <select id="attachEpisodeId" name="episodeId" defaultValue={episodeId ?? ""}>
+              <option value="" disabled>Select an episode…</option>
+              {episodeOptions.map((episode) => (
+                <option key={episode.id} value={episode.id}>
+                  {episode.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="admin-field">
+            <label htmlFor="videoFile">Video file</label>
+            <input id="videoFile" name="videoFile" type="file" accept="video/*" />
+          </div>
+          <div className="admin-field">
+            <label htmlFor="sourceUrl">Source URL</label>
+            <input id="sourceUrl" name="sourceUrl" type="text" placeholder="https://…" />
+          </div>
+          <div className="admin-field">
+            <label htmlFor="durationSeconds">Duration (seconds)</label>
+            <input id="durationSeconds" name="durationSeconds" type="number" min={0} placeholder="2700" />
+          </div>
+          <button type="submit" className="admin-btn admin-btn-primary">
+            Attach Video
+          </button>
+        </form>
+      </div>
     </main>
   );
 }

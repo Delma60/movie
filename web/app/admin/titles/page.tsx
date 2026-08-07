@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { getAdminTitleCounts, getAdminTitles } from "@/lib/admin-titles";
 import { TitleStatusToggle } from "@/components/admin/TitleStatusToggle";
+import { ArchiveTitleButton } from "@/components/admin/ArchiveTitleButton";
 import { formatDuration } from "@/lib/titles";
 import type { TitleStatus, TitleType } from "@/lib/db/schema";
 import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
@@ -15,12 +16,13 @@ interface AdminTitlesPageProps {
     type?: string;
     status?: string;
     created?: string;
+    updated?: string;
     page?: string;
   }>;
 }
 
 const VALID_TYPES: TitleType[] = ["movie", "series"];
-const VALID_STATUSES: TitleStatus[] = ["draft", "published"];
+const VALID_STATUSES: TitleStatus[] = ["draft", "published", "archived"];
 
 function formatDate(d: Date | string) {
   return new Date(d).toLocaleDateString("en-US", {
@@ -36,6 +38,7 @@ export default async function AdminTitlesPage({
   const params = await searchParams;
   const {
     created,
+    updated,
     q,
     type: typeParam,
     status: statusParam,
@@ -45,8 +48,8 @@ export default async function AdminTitlesPage({
   const type = VALID_TYPES.includes(typeParam as TitleType)
     ? (params.type as TitleType)
     : undefined;
-  const status = VALID_STATUSES.includes(params.status as TitleStatus)
-    ? (params.status as TitleStatus)
+  const status = VALID_STATUSES.includes(statusParam as TitleStatus)
+    ? (statusParam as TitleStatus)
     : undefined;
 
   const page = Number.parseInt(pageParam ?? "1", 10);
@@ -64,7 +67,7 @@ export default async function AdminTitlesPage({
           <h1>Titles</h1>
           <p>
             {counts.total} total · {counts.published} published · {counts.draft}{" "}
-            draft
+            draft · {counts.archived} archived
           </p>
         </div>
         <Link href="/admin/titles/new" className="admin-btn admin-btn-primary">
@@ -96,6 +99,7 @@ export default async function AdminTitlesPage({
               { value: "", label: "All statuses" },
               { value: "published", label: "Published" },
               { value: "draft", label: "Draft" },
+              { value: "archived", label: "Archived" },
             ],
           },
         ]}
@@ -104,6 +108,7 @@ export default async function AdminTitlesPage({
       />
 
       {created && <div className="admin-form-success">Title created.</div>}
+      {updated && <div className="admin-form-success">Title updated.</div>}
 
       <AdminTable
         columns={[
@@ -114,6 +119,7 @@ export default async function AdminTitlesPage({
           "Duration",
           "Status",
           "Added",
+          "",
           "",
         ]}
         rows={rows.map((t) => (
@@ -133,13 +139,20 @@ export default async function AdminTitlesPage({
                 : (formatDuration(t.durationMinutes) ?? "—")}
             </td>
             <td>
-              <TitleStatusToggle id={t.id} status={t.status} />
+              {t.status === "archived" ? (
+                <span className="admin-pill admin-pill-archived">archived</span>
+              ) : (
+                <TitleStatusToggle id={t.id} status={t.status} />
+              )}
             </td>
             <td className="admin-table-dim">{formatDate(t.createdAt)}</td>
             <td>
-              <AdminTableCellLink href={`/title/${t.slug}`} external>
-                View
+              <AdminTableCellLink href={`/admin/titles/${t.id}/edit`}>
+                Edit
               </AdminTableCellLink>
+            </td>
+            <td>
+              <ArchiveTitleButton id={t.id} title={t.title} status={t.status} />
             </td>
           </tr>
         ))}
