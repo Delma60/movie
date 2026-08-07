@@ -125,13 +125,7 @@ export async function createTitle(formData: FormData): Promise<void> {
   const storageBucket = process.env.STORAGE_LOGICAL_BUCKET ?? "titles";
 
   function isUpload(value: unknown): value is File {
-    return (
-      typeof value === "object" &&
-      value !== null &&
-      "arrayBuffer" in value &&
-      typeof (value as any).arrayBuffer === "function" &&
-      typeof (value as any).name === "string"
-    );
+    return value instanceof File;
   }
 
   async function maybeUploadFile(value: unknown, suffix: string): Promise<string | null> {
@@ -237,13 +231,7 @@ export async function updateTitle(titleId: string, formData: FormData): Promise<
   const storageBucket = process.env.STORAGE_LOGICAL_BUCKET ?? "titles";
 
   function isUpload(value: unknown): value is File {
-    return (
-      typeof value === "object" &&
-      value !== null &&
-      "arrayBuffer" in value &&
-      typeof (value as any).arrayBuffer === "function" &&
-      typeof (value as any).name === "string"
-    );
+    return value instanceof File;
   }
 
   async function maybeUploadFile(value: unknown, suffix: string): Promise<string | null> {

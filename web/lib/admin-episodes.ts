@@ -1,5 +1,5 @@
 import { db, episodes, titles, videoAssets } from "@/lib/db";
-import { and, asc, count, eq, ilike, isNull, or, sql } from "drizzle-orm";
+import { and, asc, count, eq, ilike, isNull, or } from "drizzle-orm";
 import type { VideoStatus } from "@/lib/db/schema";
 import { ADMIN_PAGE_SIZE } from "@/lib/admin-query";
 
@@ -85,6 +85,7 @@ export async function getAdminEpisodes(filters: AdminEpisodeFilters): Promise<Ad
         season: episodes.season,
         episodeNumber: episodes.episodeNumber,
         durationMinutes: episodes.durationMinutes,
+        synopsis: episodes.synopsis,
         createdAt: episodes.createdAt,
         titleId: titles.id,
         titleName: titles.title,
@@ -110,7 +111,7 @@ export async function getAdminEpisodes(filters: AdminEpisodeFilters): Promise<Ad
   return { rows, total: countRows[0].value };
 }
 
-export async function getAdminEpisodeById(id: string): Promise<AdminEpisodeRow | null> {
+export async function getAdminEpisodeDetailForTable(id: string): Promise<AdminEpisodeRow | null> {
   const [episode] = await db
     .select({
       id: episodes.id,
@@ -142,14 +143,24 @@ export async function getSeriesTitlesForFilter(): Promise<{ id: string; title: s
     .where(eq(titles.type, "series"))
     .orderBy(asc(titles.title));
 }
-  return db
+
+export async function getEpisodeOptions(): Promise<{ id: string; label: string }[]> {
+  const rows = await db
     .select({
       id: episodes.id,
-      label: sql<string>`concat(${titles.title}, ' · S', ${episodes.season}, ' · E', ${episodes.episodeNumber}, ' — ', ${episodes.name})`,
+      title: titles.title,
+      season: episodes.season,
+      episodeNumber: episodes.episodeNumber,
+      name: episodes.name,
     })
     .from(episodes)
     .innerJoin(titles, eq(episodes.titleId, titles.id))
     .orderBy(asc(titles.title), asc(episodes.season), asc(episodes.episodeNumber));
+
+  return rows.map((row) => ({
+    id: row.id,
+    label: `${row.title} · S${row.season} · E${row.episodeNumber} — ${row.name}`,
+  }));
 }
 
 export interface AdminEpisodeCounts {

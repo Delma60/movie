@@ -31,13 +31,7 @@ async function requireEditorActor() {
 }
 
 function isUpload(value: unknown): value is File {
-  return (
-    typeof value === "object" &&
-    value !== null &&
-    "arrayBuffer" in value &&
-    typeof (value as any).arrayBuffer === "function" &&
-    typeof (value as any).name === "string"
-  );
+  return value instanceof File;
 }
 
 export async function attachVideoAsset(formData: FormData): Promise<void> {
