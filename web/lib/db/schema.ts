@@ -17,7 +17,7 @@ import { relations } from "drizzle-orm";
    ENUMS
    ========================================================== */
 export const userRoleEnum = pgEnum("user_role", ["user", "editor", "admin"]);
-export const titleStatusEnum = pgEnum("title_status", ["draft", "published", "archived"]);
+export const titleStatusEnum = pgEnum("title_status", ["draft", "published"]);
 export const titleTypeEnum = pgEnum("title_type", ["movie", "series"]);
 export const videoStatusEnum = pgEnum("video_status", [
   "processing",

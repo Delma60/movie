@@ -5,15 +5,8 @@ import { auditLogs } from "@/lib/db/schema";
 
 export type AuditAction =
   | "title.created"
-  | "title.updated"
   | "title.status_changed"
   | "episode.created"
-  | "episode.updated"
-  | "episode.deleted"
-  | "episode.reordered"
-  | "episode.video_attached"
-  | "video.attached"
-  | "video.status_changed"
   | "ad.created"
   | "ad.active_toggled"
   | "subscription.created"
