@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { PosterCard, PosterItem } from "@/components/PosterCard";
+import { Info, Play } from "lucide-react";
 import React from "react";
 
 /* ---------------------------------------------------------
@@ -234,10 +235,10 @@ export default function VelvetHomepage() {
           </p>
           <div className="vp-hero-actions">
             <Link href="/watch/meridian" className="vp-btn vp-btn-primary">
-              ▶ Play
+              <Play size={16} strokeWidth={2.25} /> Play
             </Link>
             <Link href="/title/meridian" className="vp-btn vp-btn-secondary">
-              ⓘ More Info
+              <Info size={16} strokeWidth={2.25} /> More Info
             </Link>
           </div>
         </div>

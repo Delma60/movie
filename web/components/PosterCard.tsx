@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Play } from "lucide-react";
 
 export interface PosterItem {
   title: string;
@@ -38,7 +39,7 @@ export function PosterCard({
         <div className="vp-poster-meta">{meta}</div>
       </div>
       <div className="vp-poster-play" aria-hidden="true">
-        ▶
+        <Play size={18} strokeWidth={2.25} />
       </div>
       {typeof progress === "number" && (
         <div className="vp-progress-track">

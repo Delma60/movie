@@ -7,7 +7,7 @@ import {
 interface AdminPaginationProps {
   basePath: string;
   meta: AdminPaginationMeta;
-  searchParams: URLSearchParams | ReadonlyURLSearchParams;
+  searchParams: URLSearchParams | { toString(): string };
 }
 
 export function AdminPagination({

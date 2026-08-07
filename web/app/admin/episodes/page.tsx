@@ -121,40 +121,40 @@ export default async function AdminEpisodesPage({
 
       <AdminTable
         columns={["Series", "Episode", "Duration", "Video", "Added", ""]}
-        rows={rows.flatMap((e) => [
-          <td key={`${e.id}-series`}>
-            <AdminTableCellLink href={`/title/${e.titleSlug}`} external>
-              {e.titleName}
-            </AdminTableCellLink>
-          </td>,
-          <td key={`${e.id}-episode`}>
-            <span className="admin-table-primary">
-              S{e.season} · E{e.episodeNumber}
-            </span>
-            <span className="admin-table-sub">{e.name}</span>
-          </td>,
-          <td key={`${e.id}-duration`} className="admin-table-dim">
-            {formatDuration(e.durationMinutes)}
-          </td>,
-          <td key={`${e.id}-video`}>
-            <span
-              className={`admin-pill admin-pill-video-${e.videoStatus ?? "missing"}`}
-            >
-              {e.videoStatus ?? "missing"}
-            </span>
-          </td>,
-          <td key={`${e.id}-added`} className="admin-table-dim">
-            {formatDate(e.createdAt)}
-          </td>,
-          <td key={`${e.id}-preview`}>
-            <AdminTableCellLink
-              href={`/watch/${e.titleSlug}?ep=${e.id}`}
-              external
-            >
-              Preview
-            </AdminTableCellLink>
-          </td>,
-        ])}
+        rows={rows.map((e) => (
+          <tr key={e.id}>
+            <td>
+              <AdminTableCellLink href={`/title/${e.titleSlug}`} external>
+                {e.titleName}
+              </AdminTableCellLink>
+            </td>
+            <td>
+              <span className="admin-table-primary">
+                S{e.season} · E{e.episodeNumber}
+              </span>
+              <span className="admin-table-sub">{e.name}</span>
+            </td>
+            <td className="admin-table-dim">
+              {formatDuration(e.durationMinutes)}
+            </td>
+            <td>
+              <span
+                className={`admin-pill admin-pill-video-${e.videoStatus ?? "missing"}`}
+              >
+                {e.videoStatus ?? "missing"}
+              </span>
+            </td>
+            <td className="admin-table-dim">{formatDate(e.createdAt)}</td>
+            <td>
+              <AdminTableCellLink
+                href={`/watch/${e.titleSlug}?ep=${e.id}`}
+                external
+              >
+                Preview
+              </AdminTableCellLink>
+            </td>
+          </tr>
+        ))}
         emptyMessage="No episodes match those filters."
       />
 

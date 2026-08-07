@@ -1,3 +1,4 @@
+/* web/app/globals.css */
 @import "tailwindcss";
 
 /* ==========================================================
@@ -2159,8 +2160,15 @@ a {
   padding: 20px 20px 8px;
 }
 
+/* Single canonical definition — this used to be declared twice (once here,
+   once again further down under "TITLES TABLE EXTRAS") with conflicting
+   padding. The later rule always won because of source order, so the first
+   copy was dead code; consolidated to the version actually in effect
+   (flex-centered empty state wrapping an .admin-empty <p>). */
 .admin-empty-block {
-  padding: 8px 20px 20px;
+  display: flex;
+  justify-content: center;
+  padding: 12px 0;
 }
 
 .admin-panel-head {
@@ -2285,6 +2293,12 @@ a {
   color: var(--text-dim);
 }
 
+/* NOTE (audit): .admin-nav-cards / .admin-card below don't appear to be
+   referenced by any admin page in the current codebase — dashboard, titles,
+   episodes, users, settings, and analytics all use .admin-panel /
+   .admin-table / .admin-stat-card instead. Grep the full repo for
+   `admin-nav-cards` and `admin-card` before deleting; kept for now in case
+   a not-yet-audited admin page (e.g. a future /admin index) uses them. */
 .admin-nav-cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -2470,6 +2484,51 @@ a {
   border: none;
   color: var(--gold);
   font-size: 12.5px;
+.admin-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.admin-pagination-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(245, 244, 242, 0.04);
+  color: var(--text);
+  font-size: 12.5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.admin-pagination-btn:hover,
+.admin-pagination-btn:focus-visible {
+  border-color: var(--gold-dim);
+  background: rgba(201, 168, 118, 0.12);
+  color: var(--gold);
+}
+
+.admin-pagination-btn.is-active {
+  border-color: var(--gold);
+  background: rgba(201, 168, 118, 0.18);
+  color: var(--gold);
+}
+
+.admin-pagination-btn[aria-disabled="true"] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
   font-weight: 600;
   cursor: pointer;
   text-decoration: underline;
@@ -2576,12 +2635,6 @@ a {
 .admin-titles-panel {
   padding: 8px 20px 8px;
   overflow-x: auto;
-}
-
-.admin-empty-block {
-  display: flex;
-  justify-content: center;
-  padding: 12px 0;
 }
 
 .admin-pill-btn {

@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Play } from "lucide-react";
 import { PosterCard } from "@/components/PosterCard";
 import { addToMyListAction } from "@/lib/actions/my-list";
 import {
@@ -76,7 +77,7 @@ export default async function TitlePage({ params }: TitlePageProps) {
               href={`/watch/${title.slug}`}
               className="vp-btn vp-btn-primary"
             >
-              ▶ Play
+              <Play size={16} strokeWidth={2.25} /> Play
             </Link>
             <form action={addToMyListAction} className="vp-inline-form">
               <input type="hidden" name="titleId" value={title.id} />
@@ -112,7 +113,7 @@ export default async function TitlePage({ params }: TitlePageProps) {
                   className="vp-icon-btn vp-episode-play"
                   aria-label={`Play ${ep.name}`}
                 >
-                  ▶
+                  <Play size={16} strokeWidth={2.25} />
                 </Link>
               </li>
             ))}

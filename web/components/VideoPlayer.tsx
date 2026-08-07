@@ -1,5 +1,6 @@
 "use client";
 
+import { AlertCircle, LoaderCircle, PlayCircle } from "lucide-react";
 import { useState } from "react";
 
 type VideoStatus = "processing" | "ready" | "failed" | null | undefined;
@@ -42,7 +43,13 @@ export function VideoPlayer({ src, status, variant, label }: VideoPlayerProps) {
       ) : (
         <div className={`vp-player-fallback vp-player-fallback-${state}`}>
           <div className="vp-player-fallback-icon" aria-hidden="true">
-            {state === "processing" ? "◐" : state === "failed" ? "!" : "▶"}
+            {state === "processing" ? (
+              <LoaderCircle size={28} strokeWidth={2.25} />
+            ) : state === "failed" ? (
+              <AlertCircle size={28} strokeWidth={2.25} />
+            ) : (
+              <PlayCircle size={28} strokeWidth={2.25} />
+            )}
           </div>
           <p className="vp-player-fallback-title">{label}</p>
           <p className="vp-player-fallback-text">

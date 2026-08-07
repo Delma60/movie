@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowLeft, ArrowRight, CircleDot, Play } from "lucide-react";
 import { notFound } from "next/navigation";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import { getWatchData, formatDuration } from "@/lib/titles";
@@ -43,7 +44,7 @@ export default async function WatchPage({
     <main className="vp-root vp-watch-page">
       <div className="vp-watch-topbar">
         <Link href={`/title/${title.slug}`} className="vp-watch-back">
-          ← {title.title}
+          <ArrowLeft size={16} strokeWidth={2.25} /> {title.title}
         </Link>
       </div>
 
@@ -70,7 +71,7 @@ export default async function WatchPage({
             href={`/watch/${title.slug}?ep=${nextEpisode.id}`}
             className="vp-btn vp-btn-secondary vp-watch-next"
           >
-            Next: E{nextEpisode.episodeNumber} ▶
+            Next: E{nextEpisode.episodeNumber} <ArrowRight size={16} strokeWidth={2.25} />
           </Link>
         )}
       </div>
@@ -104,7 +105,7 @@ export default async function WatchPage({
                       className="vp-episode-playing"
                       aria-label="Now playing"
                     >
-                      ●
+                      <CircleDot size={14} strokeWidth={2.25} />
                     </span>
                   ) : (
                     <Link
@@ -112,7 +113,7 @@ export default async function WatchPage({
                       className="vp-icon-btn vp-episode-play"
                       aria-label={`Play ${e.name}`}
                     >
-                      ▶
+                      <Play size={16} strokeWidth={2.25} />
                     </Link>
                   )}
                 </li>

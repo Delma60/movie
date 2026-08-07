@@ -9,9 +9,11 @@ export interface AdminPaginationMeta {
   hasNext: boolean;
 }
 
+type SearchParamsLike = { toString(): string };
+
 export function buildAdminPageHref(
   basePath: string,
-  searchParams: URLSearchParams | ReadonlyURLSearchParams,
+  searchParams: URLSearchParams | SearchParamsLike,
   page: number,
 ) {
   const params = new URLSearchParams(searchParams.toString());

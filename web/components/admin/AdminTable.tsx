@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { Fragment, type ReactNode } from "react";
 
 interface AdminTableProps {
   columns: string[];
@@ -36,7 +36,7 @@ export function AdminTable({
         </thead>
         <tbody>
           {rows.map((row, index) => (
-            <tr key={index}>{row}</tr>
+            <Fragment key={index}>{row}</Fragment>
           ))}
         </tbody>
       </table>

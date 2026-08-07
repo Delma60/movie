@@ -116,37 +116,33 @@ export default async function AdminTitlesPage({
           "Added",
           "",
         ]}
-        rows={rows.flatMap((t) => [
-          <td key={`${t.id}-title`}>
-            <span className="admin-table-primary">{t.title}</span>
-            {t.isOriginal && <span className="admin-table-sub">Original</span>}
-          </td>,
-          <td key={`${t.id}-type`} className="admin-table-dim">
-            {t.type === "series" ? "Series" : "Movie"}
-          </td>,
-          <td key={`${t.id}-genre`} className="admin-table-dim">
-            {t.genre}
-          </td>,
-          <td key={`${t.id}-year`} className="admin-table-dim">
-            {t.year ?? "—"}
-          </td>,
-          <td key={`${t.id}-duration`} className="admin-table-dim">
-            {t.type === "series"
-              ? "—"
-              : (formatDuration(t.durationMinutes) ?? "—")}
-          </td>,
-          <td key={`${t.id}-status`}>
-            <TitleStatusToggle id={t.id} status={t.status} />
-          </td>,
-          <td key={`${t.id}-added`} className="admin-table-dim">
-            {formatDate(t.createdAt)}
-          </td>,
-          <td key={`${t.id}-view`}>
-            <AdminTableCellLink href={`/title/${t.slug}`} external>
-              View
-            </AdminTableCellLink>
-          </td>,
-        ])}
+        rows={rows.map((t) => (
+          <tr key={t.id}>
+            <td>
+              <span className="admin-table-primary">{t.title}</span>
+              {t.isOriginal && <span className="admin-table-sub">Original</span>}
+            </td>
+            <td className="admin-table-dim">
+              {t.type === "series" ? "Series" : "Movie"}
+            </td>
+            <td className="admin-table-dim">{t.genre}</td>
+            <td className="admin-table-dim">{t.year ?? "—"}</td>
+            <td className="admin-table-dim">
+              {t.type === "series"
+                ? "—"
+                : (formatDuration(t.durationMinutes) ?? "—")}
+            </td>
+            <td>
+              <TitleStatusToggle id={t.id} status={t.status} />
+            </td>
+            <td className="admin-table-dim">{formatDate(t.createdAt)}</td>
+            <td>
+              <AdminTableCellLink href={`/title/${t.slug}`} external>
+                View
+              </AdminTableCellLink>
+            </td>
+          </tr>
+        ))}
         emptyMessage="No titles match those filters."
       />
 
