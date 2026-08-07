@@ -3,24 +3,24 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, type FormEvent } from "react";
 
-interface AdminUserFiltersProps {
+interface AdminEpisodeFiltersProps {
+  seriesOptions: { id: string; title: string }[];
   resultCount: number;
 }
 
-export function AdminUserFilters({ resultCount }: AdminUserFiltersProps) {
+export function AdminEpisodeFilters({ seriesOptions, resultCount }: AdminEpisodeFiltersProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const [q, setQ] = useState(searchParams.get("q") ?? "");
-  const role = searchParams.get("role") ?? "";
+  const titleId = searchParams.get("titleId") ?? "";
+  const status = searchParams.get("status") ?? "";
 
   function updateParam(key: string, value: string) {
     const params = new URLSearchParams(searchParams.toString());
     if (value) params.set(key, value);
     else params.delete(key);
-    router.push(
-      `/admin/users${params.toString() ? `?${params.toString()}` : ""}`,
-    );
+    router.push(`/admin/episodes${params.toString() ? `?${params.toString()}` : ""}`);
   }
 
   function handleSearchSubmit(e: FormEvent) {
@@ -28,7 +28,7 @@ export function AdminUserFilters({ resultCount }: AdminUserFiltersProps) {
     updateParam("q", q);
   }
 
-  const hasActiveFilters = Boolean(searchParams.get("q") || role);
+  const hasActiveFilters = Boolean(searchParams.get("q") || titleId || status);
 
   return (
     <div className="admin-toolbar">
@@ -37,21 +37,35 @@ export function AdminUserFilters({ resultCount }: AdminUserFiltersProps) {
           type="search"
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Search name or email…"
+          placeholder="Search episode or series…"
           className="admin-search-input"
         />
       </form>
 
       <div className="admin-toolbar-filters">
         <select
-          value={role}
-          onChange={(e) => updateParam("role", e.target.value)}
+          value={titleId}
+          onChange={(e) => updateParam("titleId", e.target.value)}
           className="admin-filter-select"
         >
-          <option value="">All roles</option>
-          <option value="user">User</option>
-          <option value="editor">Editor</option>
-          <option value="admin">Admin</option>
+          <option value="">All series</option>
+          {seriesOptions.map((s) => (
+            <option key={s.id} value={s.id}>
+              {s.title}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={status}
+          onChange={(e) => updateParam("status", e.target.value)}
+          className="admin-filter-select"
+        >
+          <option value="">All video statuses</option>
+          <option value="ready">Ready</option>
+          <option value="processing">Processing</option>
+          <option value="failed">Failed</option>
+          <option value="missing">Missing</option>
         </select>
 
         {hasActiveFilters && (
@@ -60,7 +74,7 @@ export function AdminUserFilters({ resultCount }: AdminUserFiltersProps) {
             className="admin-toolbar-clear"
             onClick={() => {
               setQ("");
-              router.push("/admin/users");
+              router.push("/admin/episodes");
             }}
           >
             Clear
@@ -69,7 +83,7 @@ export function AdminUserFilters({ resultCount }: AdminUserFiltersProps) {
       </div>
 
       <span className="admin-toolbar-count">
-        {resultCount} {resultCount === 1 ? "user" : "users"}
+        {resultCount} {resultCount === 1 ? "episode" : "episodes"}
       </span>
     </div>
   );

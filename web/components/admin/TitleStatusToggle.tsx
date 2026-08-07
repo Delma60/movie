@@ -22,7 +22,9 @@ export function TitleStatusToggle({ id, status }: TitleStatusToggleProps) {
         await toggleTitleStatus(id, next);
         setCurrent(next);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Couldn't update status.");
+        setError(
+          err instanceof Error ? err.message : "Couldn't update status.",
+        );
       }
     });
   }

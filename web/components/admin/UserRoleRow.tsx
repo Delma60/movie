@@ -22,7 +22,13 @@ function formatDate(d: Date | string) {
   });
 }
 
-export function UserRoleRow({ id, displayName, email, role, createdAt }: UserRoleRowProps) {
+export function UserRoleRow({
+  id,
+  displayName,
+  email,
+  role,
+  createdAt,
+}: UserRoleRowProps) {
   const [currentRole, setCurrentRole] = useState(role);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);

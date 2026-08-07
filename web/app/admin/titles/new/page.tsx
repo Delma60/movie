@@ -17,9 +17,13 @@ interface AdminNewTitlePageProps {
   searchParams: Promise<{ error?: string }>;
 }
 
-export default async function AdminNewTitlePage({ searchParams }: AdminNewTitlePageProps) {
+export default async function AdminNewTitlePage({
+  searchParams,
+}: AdminNewTitlePageProps) {
   const { error } = await searchParams;
-  const message = error ? (ERRORS[error] ?? "Couldn't create the title.") : null;
+  const message = error
+    ? (ERRORS[error] ?? "Couldn't create the title.")
+    : null;
 
   return (
     <main className="admin-page admin-form-page">
@@ -62,11 +66,24 @@ export default async function AdminNewTitlePage({ searchParams }: AdminNewTitleP
         <div className="admin-field-row">
           <div className="admin-field">
             <label htmlFor="genre">Genre</label>
-            <input id="genre" name="genre" type="text" placeholder="Sci-Fi" required />
+            <input
+              id="genre"
+              name="genre"
+              type="text"
+              placeholder="Sci-Fi"
+              required
+            />
           </div>
           <div className="admin-field">
             <label htmlFor="year">Year</label>
-            <input id="year" name="year" type="number" min={1888} max={2100} placeholder="2026" />
+            <input
+              id="year"
+              name="year"
+              type="number"
+              min={1888}
+              max={2100}
+              placeholder="2026"
+            />
           </div>
         </div>
 
@@ -110,7 +127,12 @@ export default async function AdminNewTitlePage({ searchParams }: AdminNewTitleP
         <div className="admin-field-row">
           <div className="admin-field">
             <label htmlFor="posterUrl">Poster URL</label>
-            <input id="posterUrl" name="posterUrl" type="text" placeholder="/images/posters/…" />
+            <input
+              id="posterUrl"
+              name="posterUrl"
+              type="text"
+              placeholder="/images/posters/…"
+            />
           </div>
           <div className="admin-field">
             <label htmlFor="backdropUrl">Backdrop URL</label>
@@ -125,7 +147,12 @@ export default async function AdminNewTitlePage({ searchParams }: AdminNewTitleP
 
         <div className="admin-field">
           <label htmlFor="trailerUrl">Trailer URL</label>
-          <input id="trailerUrl" name="trailerUrl" type="text" placeholder="https://…" />
+          <input
+            id="trailerUrl"
+            name="trailerUrl"
+            type="text"
+            placeholder="https://…"
+          />
         </div>
 
         <label className="admin-checkbox-field">

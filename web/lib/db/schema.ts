@@ -263,8 +263,11 @@ export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
 
 export type TitleType = (typeof titleTypeEnum.enumValues)[number];
 export type TitleStatus = (typeof titleStatusEnum.enumValues)[number];
+export type VideoStatus = (typeof videoStatusEnum.enumValues)[number];
 export type SubscriptionStatus = (typeof subscriptionStatusEnum.enumValues)[number];
 
 export type StorageBucket = typeof storageBuckets.$inferSelect;
 export type Title = typeof titles.$inferSelect;
+export type Episode = typeof episodes.$inferSelect;
+export type VideoAsset = typeof videoAssets.$inferSelect;
 export type Subscription = typeof subscriptions.$inferSelect;

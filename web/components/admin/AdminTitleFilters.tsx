@@ -19,7 +19,9 @@ export function AdminTitleFilters({ resultCount }: AdminTitleFiltersProps) {
     const params = new URLSearchParams(searchParams.toString());
     if (value) params.set(key, value);
     else params.delete(key);
-    router.push(`/admin/titles${params.toString() ? `?${params.toString()}` : ""}`);
+    router.push(
+      `/admin/titles${params.toString() ? `?${params.toString()}` : ""}`,
+    );
   }
 
   function handleSearchSubmit(e: FormEvent) {
