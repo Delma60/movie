@@ -71,7 +71,8 @@ export default async function WatchPage({
             href={`/watch/${title.slug}?ep=${nextEpisode.id}`}
             className="vp-btn vp-btn-secondary vp-watch-next"
           >
-            Next: E{nextEpisode.episodeNumber} <ArrowRight size={16} strokeWidth={2.25} />
+            Next: E{nextEpisode.episodeNumber}{" "}
+            <ArrowRight size={16} strokeWidth={2.25} />
           </Link>
         )}
       </div>

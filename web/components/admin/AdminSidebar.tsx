@@ -57,7 +57,12 @@ const NAV_ITEMS: NavItem[] = [
   },
   { label: "Users", href: "/admin/users", icon: UsersRound, minRole: "admin" },
   { label: "Analytics", href: "/admin/analytics", icon: BarChart3 },
-  { label: "Settings", href: "/admin/settings", icon: Settings },
+  {
+    label: "Settings",
+    href: "/admin/settings",
+    icon: Settings,
+    minRole: "admin",
+  },
 ];
 
 function isActivePath(pathname: string, href: string): boolean {

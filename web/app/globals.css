@@ -2846,7 +2846,138 @@ a {
   color: var(--text-dim);
 }
 
+/* ==========================================================
+   ADMIN — ANALYTICS
+   ========================================================== */
+.admin-stat-card-static {
+  cursor: default;
+}
+
+.admin-stat-card-static:hover {
+  transform: none;
+  border-color: var(--line);
+}
+
+.admin-chart-panel {
+  padding-bottom: 16px;
+}
+
+.admin-mostwatched-panel {
+  margin-top: 20px;
+}
+
+.admin-chart-tooltip {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+.admin-chart-tooltip-label {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.admin-chart-tooltip-value {
+  color: var(--text-dim);
+}
+
+/* ==========================================================
+   ADMIN — SETTINGS
+   ========================================================== */
+.admin-settings-warning {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.admin-settings-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.admin-settings-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-settings-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 14px 4px;
+  border-bottom: 1px solid var(--line);
+}
+
+.admin-settings-row:last-child {
+  border-bottom: none;
+}
+
+.admin-settings-row-main {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.admin-settings-label {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.admin-settings-desc {
+  font-size: 12.5px;
+  color: var(--text-dim);
+  line-height: 1.5;
+  max-width: 480px;
+}
+
+.admin-settings-key {
+  font-family: var(--font-mono, monospace);
+  font-size: 11px;
+  color: var(--gold-dim);
+  margin-top: 2px;
+}
+
+.admin-settings-row-status {
+  flex-shrink: 0;
+}
+
+.admin-settings-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.admin-settings-status-set {
+  background: rgba(122, 168, 118, 0.12);
+  color: #9fd39a;
+}
+
+.admin-settings-status-missing {
+  background: rgba(122, 38, 50, 0.16);
+  color: #e8a9af;
+}
+
 @media (max-width: 720px) {
+  .admin-settings-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
   .admin-toolbar-count {
     margin-left: 0;
     width: 100%;

@@ -114,8 +114,8 @@ Admin (5) since admin depends on roles.
 
 ## 9. Admin panel — analytics
 
-- [ ] Basic metrics: most-watched titles, signups over time, active users
-- [ ] Simple charts (recharts) rather than a full BI tool for v1
+- [x] Basic metrics: most-watched titles, signups over time, active users
+- [x] Simple charts (recharts) rather than a full BI tool for v1
 - [ ] Export to CSV — nice-to-have
 
 ## 10. Billing (only if the product is paid)
