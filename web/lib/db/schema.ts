@@ -261,6 +261,9 @@ export const subscriptionsRelations = relations(subscriptions, ({ one }) => ({
   }),
 }));
 
+export type TitleType = (typeof titleTypeEnum.enumValues)[number];
+export type TitleStatus = (typeof titleStatusEnum.enumValues)[number];
+export type SubscriptionStatus = (typeof subscriptionStatusEnum.enumValues)[number];
 
 export type StorageBucket = typeof storageBuckets.$inferSelect;
 export type Title = typeof titles.$inferSelect;

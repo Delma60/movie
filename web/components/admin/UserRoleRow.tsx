@@ -11,11 +11,23 @@ interface UserRoleRowProps {
   displayName: string;
   email: string;
   role: UserRole;
+  createdAt: Date;
 }
 
-export function UserRoleRow({ id, displayName, email, role }: UserRoleRowProps) {
+function formatDate(d: Date | string) {
+  return new Date(d).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
+export function UserRoleRow({ id, displayName, email, role, createdAt }: UserRoleRowProps) {
+  const [currentRole, setCurrentRole] = useState(role);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+
+  const initial = displayName.trim()[0]?.toUpperCase() ?? "?";
 
   function handleChange(e: ChangeEvent<HTMLSelectElement>) {
     const next = e.target.value as UserRole;
@@ -23,6 +35,7 @@ export function UserRoleRow({ id, displayName, email, role }: UserRoleRowProps) 
     startTransition(async () => {
       try {
         await updateUserRole(id, next);
+        setCurrentRole(next);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Couldn't update role.");
       }
@@ -30,21 +43,34 @@ export function UserRoleRow({ id, displayName, email, role }: UserRoleRowProps) 
   }
 
   return (
-    <tr style={{ opacity: isPending ? 0.6 : 1 }}>
-      <td>{displayName}</td>
-      <td>{email}</td>
+    <tr className={isPending ? "admin-row-pending" : undefined}>
       <td>
-        <select defaultValue={role} onChange={handleChange} disabled={isPending}>
-          {ROLES.map((r) => (
-            <option key={r} value={r}>
-              {r}
-            </option>
-          ))}
-        </select>
-        {error && (
-          <div style={{ color: "#e08a8a", fontSize: 12, marginTop: 4 }}>{error}</div>
-        )}
+        <div className="admin-user-cell">
+          <span className="admin-user-cell-avatar" aria-hidden="true">
+            {initial}
+          </span>
+          <span className="admin-table-primary">{displayName}</span>
+        </div>
       </td>
+      <td className="admin-table-dim">{email}</td>
+      <td>
+        <div className="admin-role-select-wrap">
+          <select
+            value={currentRole}
+            onChange={handleChange}
+            disabled={isPending}
+            className={`admin-role-select admin-role-select-${currentRole}`}
+          >
+            {ROLES.map((r) => (
+              <option key={r} value={r}>
+                {r}
+              </option>
+            ))}
+          </select>
+          {error && <span className="admin-status-error">{error}</span>}
+        </div>
+      </td>
+      <td className="admin-table-dim">{formatDate(createdAt)}</td>
     </tr>
   );
 }

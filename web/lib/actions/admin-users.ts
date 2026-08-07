@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { db, users } from "@/lib/db";
 import { getSession } from "@/lib/auth";
 import { hasRole, type UserRole } from "@/lib/roles";
+import { getAdminUsers, type AdminUserFilters } from "@/lib/admin-users";
 
 const ASSIGNABLE_ROLES: UserRole[] = ["user", "editor", "admin"];
 
@@ -31,17 +32,9 @@ async function requireAdminActor() {
   return actor;
 }
 
-export async function listUsers() {
+export async function listUsers(filters: AdminUserFilters = {}) {
   await requireAdminActor();
-  return db
-    .select({
-      id: users.id,
-      email: users.email,
-      displayName: users.displayName,
-      role: users.role,
-    })
-    .from(users)
-    .orderBy(users.createdAt);
+  return getAdminUsers(filters);
 }
 
 export async function updateUserRole(targetUserId: string, role: UserRole): Promise<void> {
