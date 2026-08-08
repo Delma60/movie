@@ -12,7 +12,8 @@ const ERRORS: Record<string, string> = {
   missing_fields: "Episode title is required.",
   invalid_season: "Enter a valid season number.",
   invalid_episode_number: "Enter a valid episode number.",
-  duplicate_episode: "That series already has an episode with this season and number.",
+  duplicate_episode:
+    "That series already has an episode with this season and number.",
   invalid_duration: "Enter a valid duration in minutes.",
   missing_target: "Couldn't determine which episode to attach video to.",
   missing_source: "Upload a file or paste a source URL.",
@@ -29,7 +30,9 @@ export default async function AdminEditEpisodePage({
 }: AdminEditEpisodePageProps) {
   const { id } = await params;
   const { error, video } = await searchParams;
-  const message = error ? (ERRORS[error] ?? "Couldn't save the episode.") : null;
+  const message = error
+    ? (ERRORS[error] ?? "Couldn't save the episode.")
+    : null;
 
   const episode = await getAdminEpisodeById(id);
   if (!episode) notFound();
@@ -69,7 +72,14 @@ export default async function AdminEditEpisodePage({
         <div className="admin-field-row">
           <div className="admin-field">
             <label htmlFor="season">Season</label>
-            <input id="season" name="season" type="number" min={1} defaultValue={episode.season} required />
+            <input
+              id="season"
+              name="season"
+              type="number"
+              min={1}
+              defaultValue={episode.season}
+              required
+            />
           </div>
           <div className="admin-field">
             <label htmlFor="episodeNumber">Episode Number</label>
@@ -86,7 +96,14 @@ export default async function AdminEditEpisodePage({
 
         <div className="admin-field">
           <label htmlFor="name">Episode Title</label>
-          <input id="name" name="name" type="text" defaultValue={episode.name} required autoFocus />
+          <input
+            id="name"
+            name="name"
+            type="text"
+            defaultValue={episode.name}
+            required
+            autoFocus
+          />
         </div>
 
         <div className="admin-field">
@@ -103,11 +120,19 @@ export default async function AdminEditEpisodePage({
 
         <div className="admin-field">
           <label htmlFor="synopsis">Synopsis</label>
-          <textarea id="synopsis" name="synopsis" rows={4} defaultValue={episode.synopsis ?? ""} />
+          <textarea
+            id="synopsis"
+            name="synopsis"
+            rows={4}
+            defaultValue={episode.synopsis ?? ""}
+          />
         </div>
 
         <div className="admin-form-actions">
-          <Link href="/admin/episodes" className="admin-btn admin-btn-secondary">
+          <Link
+            href="/admin/episodes"
+            className="admin-btn admin-btn-secondary"
+          >
             Cancel
           </Link>
           <button type="submit" className="admin-btn admin-btn-primary">
@@ -143,16 +168,33 @@ export default async function AdminEditEpisodePage({
           style={{ marginTop: 12 }}
         >
           <input type="hidden" name="episodeId" value={episode.id} />
-          <input type="hidden" name="returnTo" value={`/admin/episodes/${episode.id}/edit`} />
+          <input
+            type="hidden"
+            name="returnTo"
+            value={`/admin/episodes/${episode.id}/edit`}
+          />
           <div className="admin-field">
             <label htmlFor="videoFile">Upload video file</label>
-            <input id="videoFile" name="videoFile" type="file" accept="video/*" />
+            <input
+              id="videoFile"
+              name="videoFile"
+              type="file"
+              accept="video/*"
+            />
           </div>
           <div className="admin-field">
             <label htmlFor="sourceUrl">…or paste a hosted URL</label>
-            <input id="sourceUrl" name="sourceUrl" type="text" placeholder="https://cdn.example.com/…" />
+            <input
+              id="sourceUrl"
+              name="sourceUrl"
+              type="text"
+              placeholder="https://cdn.example.com/…"
+            />
           </div>
-          <div className="admin-form-actions" style={{ borderTop: "none", paddingTop: 0 }}>
+          <div
+            className="admin-form-actions"
+            style={{ borderTop: "none", paddingTop: 0 }}
+          >
             <button type="submit" className="admin-btn admin-btn-primary">
               {asset ? "Replace Video" : "Attach Video"}
             </button>

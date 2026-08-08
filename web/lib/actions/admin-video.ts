@@ -58,7 +58,7 @@ export async function attachVideoAsset(formData: FormData): Promise<void> {
     const extension = extname(file.name) || ".mp4";
     const name = `${titleId ?? episodeId}-${Date.now()}${extension}`;
     sourceUrl = await uploadObject(storageProjectId, storageBucket, name, file);
-    status = "processing";
+    status = "ready";
   }
 
   if (!sourceUrl) {

@@ -5,7 +5,13 @@ import { Trash2 } from "lucide-react";
 import { deleteEpisode } from "@/lib/actions/admin-episodes";
 import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 
-export function DeleteEpisodeButton({ id, name }: { id: string; name: string }) {
+export function DeleteEpisodeButton({
+  id,
+  name,
+}: {
+  id: string;
+  name: string;
+}) {
   const [isPending, startTransition] = useTransition();
   const [confirmOpen, setConfirmOpen] = useState(false);
 

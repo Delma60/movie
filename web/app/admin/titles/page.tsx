@@ -63,10 +63,10 @@ export default async function AdminTitlesPage({
       <div className="admin-page-head">
         <div>
           <h1>Titles</h1>
-                  <p>
-                    {counts.total} total · {counts.published} published · {counts.draft}{" "}
-                    draft · {counts.archived} archived
-                  </p>
+          <p>
+            {counts.total} total · {counts.published} published · {counts.draft}{" "}
+            draft · {counts.archived} archived
+          </p>
         </div>
         <Link href="/admin/titles/new" className="admin-btn admin-btn-primary">
           <Plus size={16} strokeWidth={2.25} />
