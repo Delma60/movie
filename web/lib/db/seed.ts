@@ -18,6 +18,7 @@ import {
   watchProgress,
   myList,
   subscriptions,
+  plans,
 } from "./schema";
 
 function slugify(title: string) {
@@ -37,6 +38,7 @@ async function main() {
   await db.delete(myList);
   await db.delete(subscriptions);
   await db.delete(videoAssets);
+  await db.delete(plans);
   await db.delete(episodes);
   await db.delete(titles);
   await db.delete(users);
@@ -219,11 +221,35 @@ async function main() {
   ]);
 
   // -------------------------------------------------------
-  // Subscription (demo user)
+  // Plans + subscription (demo user)
   // -------------------------------------------------------
+  const [standardPlan, premiumPlan] = await db
+    .insert(plans)
+    .values([
+      {
+        slug: "standard",
+        name: "Standard",
+        description: "A simple streaming plan for everyday viewing.",
+        priceCents: 999,
+        interval: "month",
+        features: ["1080p streaming", "2 devices"],
+        sortOrder: 1,
+      },
+      {
+        slug: "premium",
+        name: "Premium",
+        description: "Full HD and offline viewing for a larger household.",
+        priceCents: 1599,
+        interval: "month",
+        features: ["4K streaming", "4 devices", "Offline downloads"],
+        sortOrder: 2,
+      },
+    ])
+    .returning();
+
   await db.insert(subscriptions).values({
     userId: demoUser.id,
-    plan: "premium",
+    planId: premiumPlan.id,
     status: "active",
     currentPeriodEnd: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
   });
