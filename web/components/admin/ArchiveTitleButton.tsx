@@ -11,11 +11,7 @@ interface ArchiveTitleButtonProps {
   status: TitleStatus;
 }
 
-export function ArchiveTitleButton({
-  id,
-  title,
-  status,
-}: ArchiveTitleButtonProps) {
+export function ArchiveTitleButton({ id, title, status }: ArchiveTitleButtonProps) {
   const [current, setCurrent] = useState(status);
   const [error, setError] = useState<string | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -31,9 +27,7 @@ export function ArchiveTitleButton({
         await toggleTitleStatus(id, next);
         setCurrent(next);
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Couldn't update status.",
-        );
+        setError(err instanceof Error ? err.message : "Couldn't update status.");
       }
     });
   }

@@ -112,3 +112,36 @@ export async function signedDownloadUrl(
     { expiresIn: 300 },
   );
 }
+
+/**
+ * Derives the storage key back out of a URL previously built by
+ * getPublicObjectUrl() (`${endpoint}/${BUCKET}/${projectId}/${bucket}/${name}`)
+ * and returns a freshly-signed URL for it. Lets existing DB rows — which
+ * store the old-style "public" URL — keep working unchanged even though the
+ * bucket is actually Private; no backfill needed.
+ *
+ * expiresIn defaults to 6h rather than the 300s used elsewhere, since a
+ * <video> tag reuses the same URL for every Range request over the whole
+ * playback session — a short-lived URL would break mid-playback on
+ * anything longer than a few minutes.
+ */
+export async function signedPlaybackUrl(
+  storedUrl: string,
+  expiresIn = 6 * 60 * 60,
+): Promise<string | null> {
+  let key: string;
+  try {
+    const url = new URL(storedUrl);
+    const segments = url.pathname.split("/").filter(Boolean);
+    if (segments[0] !== BUCKET) return null;
+    key = segments.slice(1).map(decodeURIComponent).join("/");
+  } catch {
+    return null;
+  }
+
+  return getSignedUrl(
+    s3,
+    new GetObjectCommand({ Bucket: BUCKET, Key: key }),
+    { expiresIn },
+  );
+}

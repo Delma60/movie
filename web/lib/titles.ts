@@ -1,4 +1,5 @@
 import { db, titles, episodes as episodesTable, videoAssets } from "@/lib/db";
+import { signedPlaybackUrl } from "@/lib/s3";
 import type { Title } from "@/lib/db/schema";
 import { and, asc, desc, eq, ilike, ne, or } from "drizzle-orm";
 import { BROWSE_SORTS, type BrowseSort } from "@/lib/browse-options";
@@ -132,7 +133,7 @@ export async function getWatchData(
       ? (episodeId ? episodes.find((e) => e.id === episodeId) : episodes[0]) ?? null
       : null;
 
-  const [videoAsset] = await db
+  const [videoAssetRaw] = await db
     .select()
     .from(videoAssets)
     .where(
@@ -142,7 +143,17 @@ export async function getWatchData(
     )
     .limit(1);
 
-  return { title, episodes, currentEpisode, videoAsset: videoAsset ?? null };
+  let videoAsset = videoAssetRaw ?? null;
+  if (videoAsset?.sourceUrl) {
+    const signedUrl = await signedPlaybackUrl(videoAsset.sourceUrl);
+    if (signedUrl) {
+      videoAsset = { ...videoAsset, sourceUrl: signedUrl };
+    }
+    // if signedUrl is null (URL didn't match our storage format), fall back
+    // to the stored value as-is rather than silently dropping the source
+  }
+
+  return { title, episodes, currentEpisode, videoAsset };
 }
 
 /** Other published titles sharing a genre, for "More Like This". */
