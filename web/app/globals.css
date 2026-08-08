@@ -3019,3 +3019,68 @@ a {
     padding: 28px 24px 48px;
   }
 }
+
+/* ==========================================================
+   ADMIN — CONFIRM DIALOG
+   ========================================================== */
+.admin-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(11, 11, 13, 0.72);
+  backdrop-filter: blur(3px);
+  animation: admin-confirm-fade-in 0.15s ease;
+}
+
+.admin-confirm-dialog {
+  width: 100%;
+  max-width: 380px;
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.6);
+  animation: admin-confirm-scale-in 0.15s ease;
+}
+
+.admin-confirm-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 18px;
+  margin: 0 0 8px;
+  color: var(--text);
+}
+
+.admin-confirm-desc {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--text-dim);
+  margin: 0 0 22px;
+}
+
+.admin-confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+@keyframes admin-confirm-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes admin-confirm-scale-in {
+  from { opacity: 0; transform: scale(0.96) translateY(4px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-confirm-overlay,
+  .admin-confirm-dialog {
+    animation: none;
+  }
+}

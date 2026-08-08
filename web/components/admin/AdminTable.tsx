@@ -29,16 +29,12 @@ export function AdminTable({
       <table className="admin-table">
         <thead>
           <tr>
-            {columns.map((column) => (
-              <th key={column}>{column}</th>
+            {columns.map((column, i) => (
+              <th key={`${column}-${i}`}>{column}</th>
             ))}
           </tr>
         </thead>
-        <tbody>
-          {rows.map((row, index) => (
-            <Fragment key={index}>{row}</Fragment>
-          ))}
-        </tbody>
+        <tbody>{rows}</tbody>
       </table>
     </div>
   );

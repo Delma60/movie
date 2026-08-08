@@ -41,6 +41,7 @@ export default async function AdminEditEpisodePage({
     .limit(1);
 
   async function updateEpisodeWithId(formData: FormData) {
+    "use server";
     await updateEpisode(id, formData);
   }
 
@@ -138,7 +139,6 @@ export default async function AdminEditEpisodePage({
 
         <form
           action={attachVideoAsset}
-          encType="multipart/form-data"
           className="admin-field-row"
           style={{ marginTop: 12 }}
         >

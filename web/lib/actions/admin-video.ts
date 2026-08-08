@@ -10,6 +10,7 @@ import { getSession } from "@/lib/auth";
 import { hasRole } from "@/lib/roles";
 import { uploadObject } from "@/lib/s3";
 import type { VideoStatus } from "@/lib/db/schema";
+import { parseDurationSeconds } from "@/lib/video-duration";
 
 const VALID_STATUSES: VideoStatus[] = ["processing", "ready", "failed"];
 
@@ -41,6 +42,7 @@ export async function attachVideoAsset(formData: FormData): Promise<void> {
   const episodeId = String(formData.get("episodeId") ?? "").trim() || null;
   const returnTo = String(formData.get("returnTo") ?? "/admin/titles");
   const sourceUrlInput = String(formData.get("sourceUrl") ?? "").trim();
+  const durationSeconds = parseDurationSeconds(String(formData.get("durationSeconds") ?? ""));
   const file = formData.get("videoFile");
 
   if (!titleId && !episodeId) {
@@ -70,9 +72,9 @@ export async function attachVideoAsset(formData: FormData): Promise<void> {
     .limit(1);
 
   if (existing) {
-    await db.update(videoAssets).set({ sourceUrl, status }).where(eq(videoAssets.id, existing.id));
+    await db.update(videoAssets).set({ sourceUrl, status, ...(durationSeconds != null ? { durationSeconds } : {}) }).where(eq(videoAssets.id, existing.id));
   } else {
-    await db.insert(videoAssets).values({ titleId, episodeId, sourceUrl, status });
+    await db.insert(videoAssets).values({ titleId, episodeId, sourceUrl, status, durationSeconds });
   }
 
   await logAdminAction({

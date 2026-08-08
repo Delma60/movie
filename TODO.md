@@ -105,6 +105,12 @@ Admin (5) since admin depends on roles.
 - [ ] Video upload/attach flow: upload to storage, trigger transcoding if using Mux/Bunny, show processing status
 - [ ] Delete/archive title with confirmation (soft delete preferred over hard delete)
 - [ ] Bulk actions (publish/unpublish multiple titles) — nice-to-have, not v1
+ - [x] Titles list: table view, search/filter, status (draft/published) toggle
+ - [x] Create/edit title form: metadata fields, poster upload, backdrop upload, trailer URL
+ - [x] Episode management for series: add/reorder/edit episodes under a title
+ - [x] Video upload/attach flow: upload to storage, trigger transcoding if using Mux/Bunny, show processing status
+ - [x] Delete/archive title with confirmation (soft delete preferred over hard delete)
+ - [ ] Bulk actions (publish/unpublish multiple titles) — nice-to-have, not v1
 
 ## 8. Admin panel — user management
 

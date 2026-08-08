@@ -44,15 +44,24 @@ export async function getAdminTitles(filters: AdminTitleFilters): Promise<AdminT
   return { rows, total: countRows[0].value };
 }
 
+/** Single title row for the admin edit form. */
+export async function getAdminTitleById(id: string): Promise<Title | null> {
+  const [row] = await db.select().from(titles).where(eq(titles.id, id)).limit(1);
+  return row ?? null;
+}
+
 export async function getAdminTitleCounts(): Promise<{
   total: number;
   published: number;
   draft: number;
+  archived: number;
 }> {
-  const [[{ value: total }], [{ value: published }]] = await Promise.all([
-    db.select({ value: count() }).from(titles),
-    db.select({ value: count() }).from(titles).where(eq(titles.status, "published")),
-  ]);
+  const [[{ value: total }], [{ value: published }], [{ value: archived }]] =
+    await Promise.all([
+      db.select({ value: count() }).from(titles),
+      db.select({ value: count() }).from(titles).where(eq(titles.status, "published")),
+      db.select({ value: count() }).from(titles).where(eq(titles.status, "archived")),
+    ]);
 
-  return { total, published, draft: total - published };
+  return { total, published, archived, draft: total - published - archived };
 }

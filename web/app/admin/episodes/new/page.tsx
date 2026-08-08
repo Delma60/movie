@@ -3,8 +3,8 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import {
   createEpisode,
-  attachEpisodeVideo,
 } from "@/lib/actions/admin-episodes";
+import { attachVideoAsset } from "@/lib/actions/admin-video";
 import {
   getEpisodeOptions,
   getSeriesTitlesForFilter,
@@ -152,11 +152,7 @@ export default async function AdminNewEpisodePage({
         <p className="admin-field-help">
           Upload a file directly to storage or paste a public video URL.
         </p>
-        <form
-          action={attachEpisodeVideo}
-          className="admin-form"
-          encType="multipart/form-data"
-        >
+        <form action={attachVideoAsset} className="admin-form">
           <div className="admin-field">
             <label htmlFor="attachEpisodeId">Episode</label>
             <select

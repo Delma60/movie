@@ -21,7 +21,13 @@ interface AdminAuditLogPageProps {
 const ACTION_LABELS: Record<string, string> = {
   "title.created": "Title created",
   "title.status_changed": "Title status changed",
+  "title.updated": "Title updated",
   "episode.created": "Episode created",
+  "episode.updated": "Episode updated",
+  "episode.deleted": "Episode deleted",
+  "episode.reordered": "Episode reordered",
+  "video.attached": "Video attached",
+  "video.status_changed": "Video status changed",
   "ad.created": "Ad created",
   "ad.active_toggled": "Ad active toggled",
   "subscription.created": "Subscription created",

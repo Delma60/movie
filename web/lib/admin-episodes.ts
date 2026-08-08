@@ -14,6 +14,7 @@ export interface AdminEpisodeRow {
   titleName: string;
   titleSlug: string;
   videoStatus: VideoStatus | null;
+  videoDurationSeconds: number | null; // NEW
 }
 
 export interface AdminEpisodeFilters {
@@ -57,6 +58,7 @@ export async function getAdminEpisodes(filters: AdminEpisodeFilters): Promise<Ad
         titleName: titles.title,
         titleSlug: titles.slug,
         videoStatus: videoAssets.status,
+        videoDurationSeconds: videoAssets.durationSeconds,
       })
       .from(episodes)
       .innerJoin(titles, eq(episodes.titleId, titles.id))
@@ -74,6 +76,63 @@ export async function getAdminEpisodes(filters: AdminEpisodeFilters): Promise<Ad
   ]);
 
   return { rows, total: countRows[0].value };
+}
+
+export interface AdminEpisodeDetail {
+  id: string;
+  name: string;
+  synopsis: string | null;
+  season: number;
+  episodeNumber: number;
+  durationMinutes: number | null;
+  titleId: string;
+  titleName: string;
+}
+
+/** Single episode row for the admin edit form. */
+export async function getAdminEpisodeById(id: string): Promise<AdminEpisodeDetail | null> {
+  const [row] = await db
+    .select({
+      id: episodes.id,
+      name: episodes.name,
+      synopsis: episodes.synopsis,
+      season: episodes.season,
+      episodeNumber: episodes.episodeNumber,
+      durationMinutes: episodes.durationMinutes,
+      titleId: episodes.titleId,
+      titleName: titles.title,
+    })
+    .from(episodes)
+    .innerJoin(titles, eq(episodes.titleId, titles.id))
+    .where(eq(episodes.id, id))
+    .limit(1);
+
+  return row ?? null;
+}
+
+export interface EpisodeOption {
+  id: string;
+  label: string;
+}
+
+/** Flat list of every episode, labeled for the "attach video" dropdown. */
+export async function getEpisodeOptions(): Promise<EpisodeOption[]> {
+  const rows = await db
+    .select({
+      id: episodes.id,
+      name: episodes.name,
+      season: episodes.season,
+      episodeNumber: episodes.episodeNumber,
+      titleName: titles.title,
+    })
+    .from(episodes)
+    .innerJoin(titles, eq(episodes.titleId, titles.id))
+    .orderBy(asc(titles.title), asc(episodes.season), asc(episodes.episodeNumber));
+
+  return rows.map((r) => ({
+    id: r.id,
+    label: `${r.titleName} — S${r.season}E${r.episodeNumber}: ${r.name}`,
+  }));
 }
 
 export async function getSeriesTitlesForFilter(): Promise<{ id: string; title: string }[]> {

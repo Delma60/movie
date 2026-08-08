@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { toggleTitleStatus } from "@/lib/actions/admin-titles";
+import { ConfirmDialog } from "@/components/admin/ConfirmDialog";
 import type { TitleStatus } from "@/lib/db/schema";
 
 interface ArchiveTitleButtonProps {
@@ -10,26 +11,15 @@ interface ArchiveTitleButtonProps {
   status: TitleStatus;
 }
 
-export function ArchiveTitleButton({
-  id,
-  title,
-  status,
-}: ArchiveTitleButtonProps) {
+export function ArchiveTitleButton({ id, title, status }: ArchiveTitleButtonProps) {
   const [current, setCurrent] = useState(status);
   const [error, setError] = useState<string | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const isArchived = current === "archived";
 
-  function handleClick() {
-    if (
-      !isArchived &&
-      !window.confirm(
-        `Archive "${title}"? It's hidden from Browse until restored.`,
-      )
-    ) {
-      return;
-    }
+  function runToggle() {
     setError(null);
     startTransition(async () => {
       try {
@@ -37,9 +27,7 @@ export function ArchiveTitleButton({
         await toggleTitleStatus(id, next);
         setCurrent(next);
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Couldn't update status.",
-        );
+        setError(err instanceof Error ? err.message : "Couldn't update status.");
       }
     });
   }
@@ -49,13 +37,26 @@ export function ArchiveTitleButton({
       <button
         type="button"
         className={`admin-btn ${isArchived ? "admin-btn-secondary" : "admin-btn-danger"}`}
-        onClick={handleClick}
+        onClick={() => (isArchived ? runToggle() : setConfirmOpen(true))}
         disabled={isPending}
         style={{ minHeight: 32, padding: "4px 12px", fontSize: 12.5 }}
       >
         {isPending ? "…" : isArchived ? "Restore" : "Archive"}
       </button>
       {error && <span className="admin-status-error">{error}</span>}
+
+      <ConfirmDialog
+        open={confirmOpen}
+        title={`Archive "${title}"?`}
+        description="It's hidden from Browse until restored."
+        confirmLabel="Archive"
+        danger
+        onConfirm={() => {
+          setConfirmOpen(false);
+          runToggle();
+        }}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </div>
   );
 }

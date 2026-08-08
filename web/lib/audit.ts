@@ -6,7 +6,13 @@ import { auditLogs } from "@/lib/db/schema";
 export type AuditAction =
   | "title.created"
   | "title.status_changed"
+  | "title.updated"
   | "episode.created"
+  | "episode.updated"
+  | "episode.deleted"
+  | "episode.reordered"
+  | "video.attached"
+  | "video.status_changed"
   | "ad.created"
   | "ad.active_toggled"
   | "subscription.created"

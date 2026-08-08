@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
 import { getAdminTitleCounts, getAdminTitles } from "@/lib/admin-titles";
+import { ArchiveTitleButton } from "@/components/admin/ArchiveTitleButton";
 import { TitleStatusToggle } from "@/components/admin/TitleStatusToggle";
 import { formatDuration } from "@/lib/titles";
 import type { TitleStatus, TitleType } from "@/lib/db/schema";
@@ -20,7 +21,7 @@ interface AdminTitlesPageProps {
 }
 
 const VALID_TYPES: TitleType[] = ["movie", "series"];
-const VALID_STATUSES: TitleStatus[] = ["draft", "published"];
+const VALID_STATUSES: TitleStatus[] = ["draft", "published", "archived"];
 
 function formatDate(d: Date | string) {
   return new Date(d).toLocaleDateString("en-US", {
@@ -62,10 +63,10 @@ export default async function AdminTitlesPage({
       <div className="admin-page-head">
         <div>
           <h1>Titles</h1>
-          <p>
-            {counts.total} total · {counts.published} published · {counts.draft}{" "}
-            draft
-          </p>
+                  <p>
+                    {counts.total} total · {counts.published} published · {counts.draft}{" "}
+                    draft · {counts.archived} archived
+                  </p>
         </div>
         <Link href="/admin/titles/new" className="admin-btn admin-btn-primary">
           <Plus size={16} strokeWidth={2.25} />
@@ -96,6 +97,7 @@ export default async function AdminTitlesPage({
               { value: "", label: "All statuses" },
               { value: "published", label: "Published" },
               { value: "draft", label: "Draft" },
+              { value: "archived", label: "Archived" },
             ],
           },
         ]}
@@ -140,9 +142,12 @@ export default async function AdminTitlesPage({
             </td>
             <td className="admin-table-dim">{formatDate(t.createdAt)}</td>
             <td>
-              <AdminTableCellLink href={`/admin/titles/${t.id}/video`}>
-                Manage
+              <AdminTableCellLink href={`/admin/titles/${t.id}/edit`}>
+                Edit
               </AdminTableCellLink>
+            </td>
+            <td>
+              <ArchiveTitleButton id={t.id} title={t.title} status={t.status} />
             </td>
             <td>
               <AdminTableCellLink href={`/title/${t.slug}`} external>
